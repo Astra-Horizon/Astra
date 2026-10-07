@@ -112,14 +112,12 @@ button:focus-visible,input:focus-visible{outline:2px solid #c4aaff;outline-offse
 .nin:focus{border-color:var(--violet);background:rgba(255,255,255,.12)}
 .nfield .pill{height:44px;border-radius:14px;padding:0 20px}
 
-/* Orb button is now a mini black hole */
-#orb{position:fixed;top:14px;right:14px;width:50px;height:50px;border-radius:16px;border:1px solid rgba(255,255,255,.4);cursor:pointer;z-index:70;padding:0;opacity:.9;--h:10px;
+/* Menu button: plain black with a white ring */
+#orb{position:fixed;top:14px;right:14px;width:50px;height:50px;border-radius:16px;border:2px solid #fff;cursor:pointer;z-index:70;padding:0;opacity:.95;
   background:#000;box-shadow:0 0 18px rgba(255,255,255,.55),inset 0 0 10px rgba(255,255,255,.12);
   transition:opacity .2s,transform .25s;animation:glowp 3.5s ease-in-out infinite alternate}
 @keyframes glowp{to{box-shadow:0 0 28px rgba(255,255,255,.9),inset 0 0 10px rgba(255,255,255,.12)}}
 #orb:hover,#orb.on{opacity:1;transform:scale(1.08)}
-#orb .ob{position:absolute;inset:0;pointer-events:none}
-#orb .dk::after{animation:none}
 #scrim{position:fixed;inset:0;z-index:50;display:none}
 
 #menu{position:fixed;top:72px;right:14px;z-index:60;width:min(344px,calc(100vw - 28px));max-height:calc(100% - 88px);overflow:auto;padding:16px;border-radius:24px;
@@ -149,6 +147,13 @@ button:focus-visible,input:focus-visible{outline:2px solid #c4aaff;outline-offse
 .x:hover{background:rgba(255,92,110,.35);opacity:1}
 .none{color:var(--dim);padding:6px 8px;font-size:13px}
 .qgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.hh{display:flex;justify-content:space-between;align-items:center}
+.addbm{border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.08);color:var(--text);border-radius:999px;padding:3px 11px;font-size:12px;font-weight:600;cursor:pointer}
+.addbm:hover{background:rgba(255,255,255,.25)}
+.bm{position:relative}
+.bm .t{width:100%}
+.bx{position:absolute;top:4px;right:4px;width:20px;height:20px;border:0;border-radius:50%;background:rgba(0,0,0,.55);color:#fff;font-size:14px;line-height:1;cursor:pointer;opacity:.55;padding:0}
+.bx:hover{background:rgba(255,92,110,.7);opacity:1}
 .qgrid .t{padding:10px 4px 8px;border-radius:14px}
 .qgrid .av{width:30px;height:30px;border-radius:10px;font-size:13px}
 .row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:7px 2px}
@@ -195,12 +200,11 @@ button:focus-visible,input:focus-visible{outline:2px solid #c4aaff;outline-offse
   <div id="stars" aria-hidden="true"></div>
   <div class="mini" aria-hidden="true"><div class="bh"><div class="halo"></div><div class="dk b"></div><div class="ln"></div><div class="ar u"></div><div class="ar l"></div><div class="hl"></div><div class="dk f"></div></div></div>
   <h1>Welcome to Astra</h1>
-  <p>Your window is ready. Pick a destination below, or open the menu with the black hole in the top corner to enter any site.</p>
-  <div class="tiles" id="wtiles"></div>
+  <p>Your window is ready. Open the menu with the button in the top corner to enter any site.</p>
 </div>
 
 <div id="scrim"></div>
-<button id="orb" aria-label="Open menu" title="Menu"><span class="ob"><span class="bh"><span class="dk b"></span><span class="ln"></span><span class="ar u"></span><span class="ar l"></span><span class="hl"></span><span class="dk f"></span></span></span></button>
+<button id="orb" aria-label="Open menu" title="Menu"></button>
 
 <div id="menu" role="dialog" aria-label="Astra menu">
   <div class="mh"><div class="mark" aria-hidden="true"><div class="bh"><div class="dk b"></div><div class="ln"></div><div class="ar u"></div><div class="ar l"></div><div class="hl"></div><div class="dk f"></div></div></div>Astra</div>
@@ -216,7 +220,7 @@ button:focus-visible,input:focus-visible{outline:2px solid #c4aaff;outline-offse
   </div>
   <div class="h">Open tabs</div>
   <div id="tablist"></div>
-  <div class="h">Jump to</div>
+  <div class="h hh">Bookmarks<button class="addbm" id="addbm" title="Bookmark the site in the address box">+ Add</button></div>
   <div class="qgrid" id="quick"></div>
   <div class="h">Options</div>
   <div class="row"><div>CloudMoon Fix<small>Turn this on after signing up</small></div><button class="sw" id="swFix" aria-label="CloudMoon Fix"></button></div>
@@ -226,7 +230,9 @@ button:focus-visible,input:focus-visible{outline:2px solid #c4aaff;outline-offse
 var tabs=[],active=-1,fix=false;
 var ALLOW='fullscreen; autoplay; clipboard-write; gamepad; microphone; camera; pointer-lock; keyboard-map';
 var COLORS=['#2b2b2b','#3a3a3a','#474747','#555','#333','#444'];
-var QUICK=[['CloudMoon','https://web.cloudmoonapp.com/'],['Google','https://www.google.com/'],['DuckDuckGo','https://duckduckgo.com/'],['YouTube','https://www.youtube.com/'],['Reddit','https://www.reddit.com/'],['Twitch','https://www.twitch.tv/']];
+var BM_KEY='astra_bookmarks',bms=loadBM();
+function loadBM(){try{var r=localStorage.getItem(BM_KEY);if(r){var a=JSON.parse(r);if(Array.isArray(a))return a}}catch(e){}return [['CloudMoon','https://web.cloudmoonapp.com/']]}
+function saveBM(){try{localStorage.setItem(BM_KEY,JSON.stringify(bms))}catch(e){}}
 var $=function(i){return document.getElementById(i)};
 var view=$('view'),menu=$('menu'),scrim=$('scrim'),orb=$('orb'),addr=$('addr'),list=$('tablist');
 document.addEventListener('selectstart',function(e){var t=e.target;if(!t||!/^(INPUT|TEXTAREA)$/.test(t.tagName||''))e.preventDefault()});document.addEventListener('dragstart',function(e){e.preventDefault()});
@@ -331,7 +337,7 @@ function buildNTP(id){
   function sub(){if(!inp.value.trim()){inp.focus();return;}navTab(idxOf(id),inp.value)}
   btn.onclick=sub;
   inp.addEventListener('keydown',function(e){if(e.key==='Enter')sub()});
-  QUICK.forEach(function(q){
+  bms.forEach(function(q){
     var b=document.createElement('button');b.className='t';
     b.appendChild(avatar(q[0]));b.appendChild(document.createTextNode(q[0]));
     b.onclick=function(){navTab(idxOf(id),q[1])};tl.appendChild(b);
@@ -349,17 +355,31 @@ function go(){
   var u=norm(addr.value); if(!u){addr.focus();return;}
   if(active>=0) navTab(active,u); else addTab(u);
 }
-function tile(q,parent){
-  var b=document.createElement('button');b.className='t';
-  b.appendChild(avatar(q[0]));b.appendChild(document.createTextNode(q[0]));
-  b.onclick=function(){addTab(q[1])};parent.appendChild(b);
+function renderBM(){
+  var q=$('quick');q.innerHTML='';
+  if(!bms.length){var n=document.createElement('div');n.className='none';n.style.gridColumn='1/-1';n.textContent='No bookmarks yet. Enter a site above and tap + Add.';q.appendChild(n);return;}
+  bms.forEach(function(b,i){
+    var w=document.createElement('div');w.className='bm';
+    var t=document.createElement('button');t.className='t';
+    t.appendChild(avatar(b[0]));t.appendChild(document.createTextNode(b[0]));
+    t.onclick=function(){addTab(b[1])};
+    var x=document.createElement('button');x.className='bx';x.textContent='\u00d7';x.setAttribute('aria-label','Remove bookmark');
+    x.onclick=function(e){e.stopPropagation();bms.splice(i,1);saveBM();renderBM()};
+    w.appendChild(t);w.appendChild(x);q.appendChild(w);
+  });
 }
-QUICK.forEach(function(q){tile(q,$('wtiles'));tile(q,$('quick'))});
+function addBM(){
+  var u=norm(addr.value); if(!u){addr.focus();return;}
+  for(var i=0;i<bms.length;i++) if(bms[i][1]===u) return;
+  bms.push([nameOf(u),u]);saveBM();renderBM();
+}
+renderBM();
 
 orb.onclick=function(){setMenu(!menu.classList.contains('open'))};
 scrim.onclick=function(){setMenu(false)};
 $('go').onclick=function(){go()};
 $('nt').onclick=addNTP;
+$('addbm').onclick=addBM;
 addr.addEventListener('keydown',function(e){if(e.key==='Enter')go()});
 $('home').onclick=function(){switchTab(-1);setMenu(false)};
 $('rl').onclick=reload;
