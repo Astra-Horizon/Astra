@@ -101,6 +101,7 @@ body{background:var(--ink);color:var(--text);font-family:var(--body);overflow:hi
 #title .l.on{opacity:1;transform:none;filter:none}
 .caret{position:absolute;top:8%;height:84%;width:.055em;left:0;background:#fff;border-radius:2px;box-shadow:0 0 14px rgba(255,255,255,.9);animation:blink .8s steps(1) infinite;transition:left .15s ease-out,opacity .6s}
 .caret.off{opacity:0;animation:none}
+.caret.wait{visibility:hidden}
 @keyframes blink{50%{opacity:0}}
 
 #ctl{position:fixed;z-index:2;left:50%;transform:translateX(-50%);top:var(--ct,70%);width:min(420px,88vw);text-align:center;opacity:0;pointer-events:none;transition:opacity .8s ease .1s}
@@ -831,7 +832,14 @@ requestAnimationFrame(function(t){fxPrev=t;requestAnimationFrame(frame)});
 layout();
 window.addEventListener('resize',layout);
 (document.fonts&&document.fonts.ready?Promise.race([document.fonts.ready,new Promise(function(r){setTimeout(r,1500)})]):Promise.resolve()).then(function(){
-  layout();setTimeout(typeIn,450);
+  layout();
+  /* Let the stars, disk and particles load in first (and any first-frame hitches happen), then start the title typing. */
+  caret.classList.add('wait');
+  var t0=Date.now();
+  (function waitScene(){
+    if(fxTime>=2.6||Date.now()-t0>7000){caret.classList.remove('wait');setTimeout(typeIn,300)}
+    else setTimeout(waitScene,100);
+  })();
 });
 
 function openSession(){
