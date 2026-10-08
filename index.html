@@ -106,12 +106,11 @@ body{background:var(--ink);color:var(--text);font-family:var(--body);overflow:hi
 #ctl.show{opacity:1;pointer-events:auto}
 .launch{margin-top:1rem;border:0;border-radius:999px;padding:1rem 3.4rem;font:inherit;font-size:1.05rem;font-weight:800;color:#000;cursor:pointer;
   background:linear-gradient(120deg,#fff,#d6d6dc);box-shadow:0 10px 40px rgba(255,255,255,.3);transition:transform .2s,box-shadow .2s,filter .2s}
-.launch:hover{transform:translate(var(--mx,0px),calc(var(--my,0px) - 2px)) scale(1.04);box-shadow:0 14px 56px rgba(255,255,255,.55);filter:brightness(1.08)}
+.launch:hover{transform:translateY(-2px) scale(1.04);box-shadow:0 14px 56px rgba(255,255,255,.55);filter:brightness(1.08)}
 .launch:focus-visible{outline:3px solid #fff;outline-offset:4px}
 .note{margin-top:.9rem;font-size:.85rem;color:#ff9bb0;min-height:1.2em}
 
 /* ---- extra motion ---- */
-.launch{transform:translate(var(--mx,0px),var(--my,0px))}
 #title.live .l{animation:fl 6s ease-in-out infinite;animation-delay:calc(var(--i,0) * .45s)}
 @keyframes fl{50%{transform:translateY(-.035em)}}
 @media (prefers-reduced-motion:reduce){
@@ -632,25 +631,14 @@ function pj(r,th){
 function addRing(flat,x,y,r0,sp,max,a,push){RG.push({flat:flat,x:x,y:y,r:r0,sp:sp,max:max,a:a,ae:a,push:push||0})}
 function fxPulse(n,ring){flash=Math.min(1.6,flash+n);if(ring&&HH&&!RM)addRing(true,0,0,HH*.5,HH*1.3,HH*3.4,.8)}
 
-function magnet(){
-  if(RM||!ctl.classList.contains('show'))return;
-  var bs=[launchBtn];
-  for(var i=0;i<bs.length;i++){
-    var b=bs[i],r=b.getBoundingClientRect(),ox=b._mx||0,oy=b._my||0;
-    var cx=r.left+r.width/2-ox,cy=r.top+r.height/2-oy,dx=mouse.x-cx,dy=mouse.y-cy,d=Math.hypot(dx,dy),reach=Math.max(r.width,170);
-    var f=mouse.on&&d<reach?1-d/reach:0;
-    b._mx=dx*.22*f;b._my=dy*.3*f;
-    b.style.setProperty('--mx',b._mx.toFixed(1)+'px');b.style.setProperty('--my',b._my.toFixed(1)+'px');
-  }
-}
 function setMouse(e){
   mouse.x=e.clientX;mouse.y=e.clientY;
   if(!mouse.seen){mouse.seen=true;mouse.px=mouse.x;mouse.py=mouse.y;mouse.cx=mouse.x;mouse.cy=mouse.y}
   mouse.on=true;
   mouse.tx=(mouse.x/(VW||1)-.5)*2;mouse.ty=(mouse.y/(VH||1)-.5)*2;
 }
-document.addEventListener('pointermove',function(e){setMouse(e);magnet()});
-document.documentElement.addEventListener('mouseleave',function(){mouse.on=false;mouse.tx=0;mouse.ty=0;magnet()});
+document.addEventListener('pointermove',function(e){setMouse(e)});
+document.documentElement.addEventListener('mouseleave',function(){mouse.on=false;mouse.tx=0;mouse.ty=0});
 
 function frame(t){
   requestAnimationFrame(frame);
