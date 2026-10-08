@@ -92,8 +92,9 @@ body{background:var(--ink);color:var(--text);font-family:var(--body);overflow:hi
 .hero .hl{z-index:20}
 
 #title{position:fixed;z-index:2;left:50%;top:var(--cy,44%);transform:translate(calc(-50% + var(--tx,0px)),calc(-50% + var(--ty,0px))) perspective(700px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)) rotate(calc(-18deg + var(--tw,0deg))) translateY(var(--tup,0px));margin:0;white-space:nowrap;line-height:1;
-  font-family:var(--head);font-weight:800;letter-spacing:-.02em;font-size:100px;
-  filter:drop-shadow(0 0 22px rgba(255,255,255,.35))}
+  font-family:var(--head);font-weight:800;letter-spacing:-.02em;font-size:100px;}
+#title::before{content:'Astra';position:absolute;left:0;top:0;white-space:nowrap;color:#fff;opacity:0;filter:blur(11px);pointer-events:none;transition:opacity .8s ease}
+#title.live::before{opacity:.35}
 #title .l{display:inline-block;opacity:0;transform:translateY(.12em) scale(.9);filter:blur(6px);
   transition:opacity .35s ease,transform .4s cubic-bezier(.2,.9,.3,1.3),filter .4s;
   background:linear-gradient(180deg,#fff 5%,#b9b9c3 95%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent}
@@ -111,10 +112,9 @@ body{background:var(--ink);color:var(--text);font-family:var(--body);overflow:hi
 .note{margin-top:.9rem;font-size:.85rem;color:#ff9bb0;min-height:1.2em}
 
 /* ---- extra motion ---- */
-#title.live .l{animation:fl 6s ease-in-out infinite;animation-delay:calc(var(--i,0) * .45s)}
 @keyframes fl{50%{transform:translateY(-.035em)}}
 @media (prefers-reduced-motion:reduce){
-  #title.live .l,.halo,.glow i,.dk.b,.dk.f,.ar.u,.ln{animation:none!important}
+  .halo,.glow i,.dk.b,.dk.f,.ar.u,.ln{animation:none!important}
   .wave{display:none}
 }
 </style>
@@ -365,7 +365,7 @@ function layout(){
   title.style.fontSize=fs+'px';
   root.style.setProperty('--cy',cy+'px');
   hero.style.setProperty('--h',h+'px');
-  root.style.setProperty('--tup',(-.08*h)+'px');
+  root.style.setProperty('--tup',(-.08*h)+'px');TUP=-.08*h;
   ctl.style.setProperty('--ct',(cy+.88*h+14)+'px');
   HOLE.h=h;HOLE.cy=cy;if(window.fxResize)fxResize();
   placeCaret();
@@ -595,7 +595,24 @@ function drawGL(intro){
 }
 /* The disk moves slowly, so it is redrawn at 30fps while particles run at full speed. Same look, about half the GPU work.
    If frames still run slow, the disk redraw rate drops a little further. */
-var glInt=1/32,glAcc=1,glDirty=true,perfAcc=0,perfN=0,perfBad=0;
+var TUP=0,lastT='',lastG='',starAcc=1,starDirty=true,starSig='',batchInit=0,glInt=1/32,glAcc=1,glDirty=true,perfAcc=0,perfN=0,perfBad=0;
+var BA=12,BW=[.45,.6,.8,1.05,1.4,1.9,2.6,3.6],BCAP=1500,BUF=[],BN=[];
+for(var bi=0;bi<BA*8;bi++){BUF.push(new Float32Array(BCAP*4));BN.push(0)}
+function wIdx(w){return w<.52?0:w<.7?1:w<.92?2:w<1.22?3:w<1.65?4:w<2.25?5:w<3.1?6:7}
+function seg(x1,y1,x2,y2,al,w){
+  var ai=(al*BA)|0;if(ai>=BA)ai=BA-1;
+  var k=ai*8+wIdx(w),n=BN[k];if(n>=BCAP)return;
+  var b=BUF[k],o=n*4;b[o]=x1;b[o+1]=y1;b[o+2]=x2;b[o+3]=y2;BN[k]=n+1;
+}
+function flushSegs(c){
+  for(var k=0;k<BUF.length;k++){
+    var n=BN[k];if(!n)continue;
+    c.globalAlpha=((k>>3)+.5)/BA;c.lineWidth=BW[k&7];c.beginPath();
+    var b=BUF[k];
+    for(var j=0;j<n;j++){var o=j*4;c.moveTo(b[o],b[o+1]);c.lineTo(b[o+2],b[o+3])}
+    c.stroke();BN[k]=0;
+  }
+}
 function perfTick(dt){
   if(fxTime<3||dt>.5||glInt>.045)return;
   perfAcc+=dt;perfN++;
@@ -608,7 +625,7 @@ function fxResize(){
   VW=window.innerWidth;VH=window.innerHeight;
   var rdpr=window.devicePixelRatio||1,dpr=Math.min(rdpr,1.25);
   cb.width=cf.width=Math.round(VW*dpr);cb.height=cf.height=Math.round(VH*dpr);
-  var gs=Math.min(rdpr,1.25);glDirty=true;
+  var gs=Math.min(rdpr,1.25);glDirty=true;starDirty=true;
   bhgl.width=Math.max(2,Math.round(VW*gs));bhgl.height=Math.max(2,Math.round(VH*gs));
   if(glOK===null){glOK=initGL();if(!glOK)hero.classList.add('nogl')}
   xb.setTransform(dpr,0,0,dpr,0,0);xf.setTransform(dpr,0,0,dpr,0,0);
@@ -670,15 +687,15 @@ function frame(t){
   glAcc+=dt;if(glDirty||glAcc>=glInt-.002){glAcc=0;glDirty=false;drawGL(intro)}
   /* title drifts gently, small enough to stay inside the hole and clear of the rays */
   var dr=par*intro;
-  title.style.setProperty('--tx',(Math.sin(fxTime*.5)*.035*HH*dr).toFixed(2)+'px');
-  title.style.setProperty('--ty',(Math.sin(fxTime*.37+1.3)*.025*HH*dr).toFixed(2)+'px');
-  title.style.setProperty('--tw',(Math.sin(fxTime*.29+.6)*1.4*dr).toFixed(2)+'deg');
-  title.style.setProperty('--rx',(-par*mouse.sy*5).toFixed(2)+'deg');title.style.setProperty('--ry',(par*mouse.sx*7).toFixed(2)+'deg');
-  glowEl.style.setProperty('--gx',(par*mouse.sx*14).toFixed(1)+'px');glowEl.style.setProperty('--gy',(par*mouse.sy*10).toFixed(1)+'px');
+  var tstr='translate(-50%,-50%) rotate(-18deg) translateY('+TUP.toFixed(1)+'px)';
+  if(tstr!==lastT){title.style.transform=tstr;lastT=tstr}
+  var gstr=(par*mouse.sx*14).toFixed(1)+'|'+(par*mouse.sy*10).toFixed(1);
+  if(gstr!==lastG){glowEl.style.setProperty('--gx',(par*mouse.sx*14).toFixed(1)+'px');glowEl.style.setProperty('--gy',(par*mouse.sy*10).toFixed(1)+'px');lastG=gstr}
 
-  xb.clearRect(0,0,VW,VH);xf.clearRect(0,0,VW,VH);
-  xb.globalCompositeOperation='lighter';xf.globalCompositeOperation='lighter';
-  xb.lineCap='round';xf.lineCap='round';xb.strokeStyle='#fff';xf.strokeStyle='#fff';xb.fillStyle='#fff';xf.fillStyle='#fff';
+  starAcc+=dt;var drawStars=starDirty||starAcc>=1/32-.002;
+  if(drawStars){starAcc=0;starDirty=false;xb.clearRect(0,0,VW,VH);xb.globalCompositeOperation='lighter';xb.fillStyle='#fff'}
+  xf.clearRect(0,0,VW,VH);xf.globalCompositeOperation='lighter';
+  xf.lineCap='round';xf.strokeStyle='#fff';xf.fillStyle='#fff';
 
   /* shock rings: update + draw */
   for(i=RG.length-1;i>=0;i--){
@@ -690,17 +707,27 @@ function frame(t){
     xf.stroke();
   }
 
-  /* starfield on the back canvas, bent around the hole (primary + faint secondary image) */
-  var thE=HH*.72;
-  for(i=0;i<ST.length;i++){
-    var st=ST[i],sx0=st.u*VW,sy0=st.v*VH;
-    var ddx=sx0-CX,ddy=sy0-CY,be=Math.sqrt(ddx*ddx+ddy*ddy)+.001;
-    var rt=Math.sqrt(be*be+4*thE*thE),wl=Math.exp(-Math.pow(be/(3.4*thE),2));
-    var kk=1+((.5*(be+rt))/be-1)*wl;
-    var al=st.b*(.55+.45*Math.sin(fxTime*st.f+st.p))*(1+1.2*Math.max(0,1-be/(2.2*thE)))*intro;
-    if(al>1)al=1;
-    xb.globalAlpha=al;xb.fillRect(CX+ddx*kk-st.s/2,CY+ddy*kk-st.s/2,st.s,st.s);
-    if(be<thE*3){var k2=(.5*(be-rt))/be*wl;xb.globalAlpha=al*.35;xb.fillRect(CX+ddx*k2-st.s/2,CY+ddy*k2-st.s/2,st.s,st.s)}
+  /* starfield on the back canvas, bent around the hole (primary + faint secondary image). Positions are cached; only the twinkle changes. */
+  if(drawStars){
+    var thE=HH*.72,sg=VW+'|'+VH+'|'+CX+'|'+CY+'|'+HH;
+    if(sg!==starSig){
+      starSig=sg;
+      for(i=0;i<ST.length;i++){
+        var st=ST[i],ddx=st.u*VW-CX,ddy=st.v*VH-CY,be=Math.sqrt(ddx*ddx+ddy*ddy)+.001;
+        var rt=Math.sqrt(be*be+4*thE*thE),wl=Math.exp(-Math.pow(be/(3.4*thE),2));
+        var kk=1+((.5*(be+rt))/be-1)*wl;
+        st.x1=CX+ddx*kk-st.s/2;st.y1=CY+ddy*kk-st.s/2;
+        st.a0=st.b*(1+1.2*Math.max(0,1-be/(2.2*thE)));
+        st.h2=be<thE*3;
+        if(st.h2){var k2=(.5*(be-rt))/be*wl;st.x2=CX+ddx*k2-st.s/2;st.y2=CY+ddy*k2-st.s/2}
+      }
+    }
+    for(i=0;i<ST.length;i++){
+      var st=ST[i],al=st.a0*(.55+.45*Math.sin(fxTime*st.f+st.p))*intro;
+      if(al>1)al=1;
+      xb.globalAlpha=al;xb.fillRect(st.x1,st.y1,st.s,st.s);
+      if(st.h2){xb.globalAlpha=al*.35;xb.fillRect(st.x2,st.y2,st.s,st.s)}
+    }
   }
 
   /* debris */
@@ -726,13 +753,14 @@ function frame(t){
     if(a<.01)continue;
     a*=.65+.7*(.5+.5*dop);if(a>1)a=1;
     var cx=xf;
-    cx.globalAlpha=a;cx.lineWidth=p.size;cx.beginPath();cx.moveTo(X1,Y1);cx.lineTo(X,Y);cx.stroke();
+    seg(X1,Y1,X,Y,a,p.size);
     if(tl>1){
-      cx.globalAlpha=a*.5;cx.lineWidth=p.size*.8;cx.beginPath();cx.moveTo(X2,Y2);cx.lineTo(X1,Y1);cx.stroke();
-      cx.globalAlpha=a*.22;cx.lineWidth=p.size*.6;cx.beginPath();cx.moveTo(X3,Y3);cx.lineTo(X2,Y2);cx.stroke();
+      seg(X2,Y2,X1,Y1,a*.5,p.size*.8);
+      seg(X3,Y3,X2,Y2,a*.22,p.size*.6);
       if(p.size>1.8||(rr<.9&&a>.5)){var gs=p.size*7;cx.globalAlpha=a*.5;cx.drawImage(GLOW,X-gs/2,Y-gs/2,gs,gs)}
     }
   }
+  flushSegs(xf);
 
   /* comets that fall into the hole */
   if(fxReady&&!RM&&fxTime>nextComet){
