@@ -230,7 +230,12 @@ select.inp option{background:#111;color:#fff}
 .pill.wide{width:100%;background:var(--tc);color:#000}
 .pill:disabled{opacity:.5;cursor:default}
 .st{min-height:1.1em;font-size:12px;color:var(--dim)}.st.ok{color:#7dffa8}.st.err{color:#ff8b9a}
-.keybox{padding:10px 12px;border-radius:12px;border:1px dashed var(--tc);background:rgba(255,255,255,.05);font-family:ui-monospace,Consolas,monospace;font-size:12.5px;word-break:break-all;user-select:text;-webkit-user-select:text}
+.keybox{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;border:1px dashed var(--tc);background:rgba(255,255,255,.05);font-family:ui-monospace,Consolas,monospace;font-size:12.5px}
+.keybox .kv{flex:1;min-width:0;word-break:break-all;user-select:all;-webkit-user-select:all;padding:4px 6px;border-radius:8px;background:rgba(255,255,255,.14);box-shadow:0 0 0 1px var(--tc),0 0 14px -2px var(--tc);color:#fff;font-weight:600;letter-spacing:.02em}
+.keybox .kv::selection{background:var(--tc);color:#000}
+.keybox .kcopy{flex:none;height:28px;padding:0 12px;border-radius:999px;border:1px solid var(--tc);background:rgba(255,255,255,.08);color:var(--text);font:600 12px system-ui,sans-serif;cursor:pointer}
+.keybox .kcopy:hover{background:var(--tc);color:#000}
+.keybox .kcopy.done{background:#7dffa8;border-color:#7dffa8;color:#000}
 .krow{display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:12px;background:rgba(255,255,255,.05);font-size:12px}
 .krow .m{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--dim)}
 .krow button{height:24px;padding:0 10px;border-radius:999px;border:1px solid rgba(255,92,110,.5);background:rgba(255,92,110,.12);color:#ff8b9a;cursor:pointer;font-size:11px;font-weight:600}
@@ -624,7 +629,15 @@ function adminSection(p){
   var days=el('input','inp');days.type='number';days.min=1;days.placeholder='Days (blank = never)';days.setAttribute('aria-label','Expires in days');
   var note=el('input','inp');note.placeholder='Note (optional)';note.maxLength=80;note.setAttribute('aria-label','Note');
   var t1=el('div','two');t1.appendChild(sel);t1.appendChild(uses);
-  var mint=el('button','pill wide','Generate Key'),ks=el('div','st'),out=el('div','keybox');out.style.display='none';
+  var mint=el('button','pill wide','Generate Key'),ks=el('div','st'),out=el('div','keybox'),kv=el('span','kv'),kc=el('button','kcopy','Copy');out.style.display='none';kc.type='button';out.appendChild(kv);out.appendChild(kc);
+  function selKey(){try{var rg=document.createRange();rg.selectNodeContents(kv);var sl=window.getSelection();sl.removeAllRanges();sl.addRange(rg)}catch(e){}}
+  function copyKey(){
+    var v=kv.textContent;
+    function ok(){kc.textContent='Copied!';kc.classList.add('done');selKey();setTimeout(function(){kc.textContent='Copy';kc.classList.remove('done')},1600)}
+    function fb(){selKey();try{document.execCommand('copy')?ok():kc.textContent='Press Ctrl+C'}catch(e){kc.textContent='Press Ctrl+C'}}
+    if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(v).then(ok,fb);else fb();
+  }
+  kc.onclick=copyKey;kv.onclick=selKey;
   var list=el('div','sec');
   function refresh(){
     api('list_keys').then(function(r){
@@ -646,8 +659,8 @@ function adminSection(p){
   mint.onclick=function(){
     mint.disabled=true;ks.className='st';ks.textContent='Generating...';out.style.display='none';
     api('mint_key',{tier:sel.value,max_uses:uses.value,days:days.value,note:note.value}).then(function(r){
-      out.textContent=r.key;out.style.display='block';ks.className='st ok';ks.textContent='Copy it now - it is only shown once.';
-      try{navigator.clipboard.writeText(r.key)}catch(e){}
+      kv.textContent=r.key;out.style.display='flex';ks.className='st ok';ks.textContent='Copy it now - it is only shown once.';
+      selKey();try{navigator.clipboard.writeText(r.key)}catch(e){}
       note.value='';refresh();
     }).catch(function(e){ks.className='st err';ks.textContent=e.message}).then(function(){mint.disabled=false});
   };
