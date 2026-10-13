@@ -199,6 +199,26 @@ button:focus-visible,input:focus-visible{outline:2px solid #fff;outline-offset:2
 .aiform button:disabled{opacity:.4;cursor:default}
 #panic{position:fixed;inset:0;z-index:9999;background:#fff;display:none}
 #panic.on{display:block}
+#menu{width:min(380px,calc(100vw - 28px));padding:18px;border-radius:26px;background:linear-gradient(180deg,rgba(24,24,28,.96),rgba(8,8,10,.97))}
+.h{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;font-weight:800;margin:20px 2px 9px}
+.h span{letter-spacing:.04em;text-transform:none;font-weight:600;opacity:.7}
+.t{border-radius:16px;padding:12px 4px 10px}
+.pill{font-weight:800}.kill{border-radius:14px}
+#drop{display:flex;flex-direction:column;align-items:center;gap:3px;padding:20px 12px;border:1.5px dashed rgba(255,255,255,.3);border-radius:16px;background:rgba(255,255,255,.04);cursor:pointer;text-align:center;transition:all .2s}
+#drop:hover,#drop.over{border-color:#fff;background:rgba(255,255,255,.12);transform:translateY(-1px)}
+#drop b{font-size:13px}#drop small{color:var(--dim);font-size:11.5px}
+#fstat{min-height:16px;margin:8px 2px 0;font-size:12px;color:var(--dim)}#fstat.bad{color:#ff7b8a}
+#flist{display:flex;flex-direction:column;gap:6px;margin-top:6px;max-height:220px;overflow:auto;scrollbar-width:thin}
+.frow{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:14px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);transition:background .2s}
+.frow:hover{background:rgba(255,255,255,.12)}
+.fi{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:#fff;color:#000;font-size:9px;font-weight:800;flex:none}
+.fm{flex:1;min-width:0}.fn{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600;font-size:12.5px}.fm small{color:var(--dim);font-size:11px}
+.aichips{display:flex;flex-wrap:wrap;gap:6px;padding:0 12px}
+.aichips:not(:empty){padding:8px 12px 0;border-top:1px solid rgba(255,255,255,.14)}
+.aichip{padding:5px 11px;border-radius:999px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);font-size:12px;font-weight:600;cursor:pointer;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.aichip:hover{background:rgba(255,92,110,.35)}
+.aiform .aiattach{width:42px;padding:0;font-size:22px;background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.22)}
+.aiform .aiattach:hover{background:rgba(255,255,255,.2)}
 </style>
 </head>
 <body>
@@ -225,6 +245,9 @@ button:focus-visible,input:focus-visible{outline:2px solid #fff;outline-offset:2
   <div class="qgrid" id="quick"></div>
   <div class="h">Open Tabs</div>
   <div id="tablist"></div>
+  <div class="h">Files <span id="fmode"></span></div>
+  <div id="drop" tabindex="0" role="button" aria-label="Upload files"><b>Drop files here</b><small>or click to browse (max 50 MB each)</small><input id="fin" type="file" multiple hidden></div>
+  <div id="fstat" aria-live="polite"></div><div id="flist"></div>
   <div class="h">Settings</div>
   <div id="prefs"></div>
   <div class="row"><div>CloudMoon Fix<small>Applies a sandbox to all tabs</small></div><button class="sw" id="swFix" aria-label="CloudMoon Fix"></button></div>
@@ -262,7 +285,7 @@ function setMenu(o){
 }
 
 /* ---- tabs ---- */
-function norm(v){v=(v||'').trim();return !v?'':/^https?:\/\//i.test(v)?v:'https://'+v}
+function norm(v){v=(v||'').trim();return !v?'':/^(https?:\/\/|blob:)/i.test(v)?v:'https://'+v}
 function nameOf(u){
   try{var h=new URL(u).hostname.replace(/^www\./,'');return h.indexOf('cloudmoon')>-1?'CloudMoon':h.charAt(0).toUpperCase()+h.slice(1)}
   catch(e){return 'New Tab'}
@@ -276,13 +299,13 @@ function applySandbox(f){
   if(fixEnabled)f.setAttribute('sandbox','allow-forms allow-scripts allow-same-origin');
   else f.removeAttribute('sandbox');
 }
-function addTab(url){
+function addTab(url,name){
   url=norm(url===undefined?addr.value:url);
   if(!url)return;
   var id='f'+Date.now()+Math.floor(Math.random()*99),f=el('iframe');
   f.id=id;f.setAttribute('allow',ALLOW);
   applySandbox(f);f.src=url;view.appendChild(f);
-  tabs.push({id:id,name:nameOf(url)});
+  tabs.push({id:id,name:name||nameOf(url)});
   addr.value='';switchTab(tabs.length-1);setMenu(false);
 }
 function switchTab(i){
@@ -328,31 +351,71 @@ function toggleFix(){
 
 /* ---- Astra AI: native chat tab, handled by the Supabase edge function ---- */
 var AI_URL='https://nzctnrhudojfsilcorio.supabase.co/functions/v1/astra-ai';
-var AI_TOK='astraK7mQ9vXp4N2bT8wZ6R3jL5c';
+/* ---- reading attachments for the AI (text, code, PDF, images) ---- */
+var TEXTX=/\.(txt|md|csv|tsv|json|xml|html?|css|js|ts|jsx|tsx|py|java|c|cpp|h|cs|go|rs|rb|php|sql|sh|yml|yaml|toml|ini|log|tex)$/i;
+function loadPdf(){
+  if(window.pdfjsLib)return Promise.resolve(window.pdfjsLib);
+  return new Promise(function(ok,no){
+    var sc=document.createElement('script');sc.src='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+    sc.onload=function(){pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';ok(pdfjsLib)};
+    sc.onerror=function(){no(new Error('Could not load the PDF reader'))};document.head.appendChild(sc);
+  });
+}
+function pdfText(buf){
+  return loadPdf().then(function(lib){return lib.getDocument({data:buf}).promise}).then(function(doc){
+    var out=[],n=Math.min(doc.numPages,40),i=1;
+    return (function next(){
+      if(i>n)return out.join('\n\n');
+      return doc.getPage(i++).then(function(p){return p.getTextContent()}).then(function(c){out.push(c.items.map(function(x){return x.str}).join(' '));return next()});
+    })();
+  });
+}
+function readAny(f){
+  return new Promise(function(ok,no){
+    var r=new FileReader(),isImg=/^image\//.test(f.type),isPdf=/\.pdf$/i.test(f.name)||f.type==='application/pdf';
+    r.onerror=function(){no(r.error)};
+    if(f.size>(isImg?4:10)*1048576)return no(new Error(f.name+' is too big ('+(isImg?'4':'10')+' MB max)'));
+    if(isImg){r.onload=function(){ok({name:f.name,image:r.result})};r.readAsDataURL(f)}
+    else if(isPdf){r.onload=function(){pdfText(r.result).then(function(t){ok({name:f.name,text:t||'(no readable text in this PDF)'})},no)};r.readAsArrayBuffer(f)}
+    else if(f.type.indexOf('text')===0||TEXTX.test(f.name)){r.onload=function(){ok({name:f.name,text:r.result})};r.readAsText(f)}
+    else no(new Error(f.name+': unsupported type (use text, code, PDF or images)'));
+  });
+}
 function openAI(){
   for(var i=0;i<tabs.length;i++)if(tabs[i].ai){switchTab(i);setMenu(false);return}
   var d=el('div','aipanel'),hist=[];
   d.id='ai'+Date.now();
   d.innerHTML='<div class="aihead"><svg viewBox="0 0 32 32"><g transform="rotate(-18 16 16)" fill="none" stroke="#fff"><ellipse cx="16" cy="16" rx="14" ry="3.8" stroke-width="1.7"/><circle cx="16" cy="16" r="6.4" fill="#000" stroke-width="1.1"/><path d="M2 16a14 3.8 0 0 0 28 0" stroke-width="2"/></g></svg><b>Astra AI</b><small>ASTRA</small></div>'
     +'<div class="aichat"><div class="aimsg a">Hey! I\'m Astra AI. Ask me anything - homework, code, ideas, or just chat.</div></div>'
-    +'<form class="aiform"><input placeholder="Ask Astra AI anything..." autocomplete="off" maxlength="2000" aria-label="Message"><button type="submit">Send</button></form>';
+    +'<div class="aichips"></div><form class="aiform"><button type="button" class="aiattach" title="Attach files" aria-label="Attach files">+</button><input placeholder="Ask about your files, or anything..." autocomplete="off" maxlength="2000" aria-label="Message"><input type="file" class="aifile" multiple hidden><button type="submit">Send</button></form>';
   view.appendChild(d);
   tabs.push({id:d.id,name:'Astra AI',ai:true});
   switchTab(tabs.length-1);setMenu(false);
-  var chat=d.querySelector('.aichat'),form=d.querySelector('.aiform'),inp=d.querySelector('input'),send=d.querySelector('button');
+  var chat=d.querySelector('.aichat'),form=d.querySelector('.aiform'),inp=d.querySelector('input'),send=d.querySelector('button[type=submit]');
   function add(cls,text){var m=el('div','aimsg '+cls,text);chat.appendChild(m);chat.scrollTop=chat.scrollHeight}
   function typing(on){
     var t=d.querySelector('.aityping');
     if(on&&!t){t=el('div','aityping');t.innerHTML='<i></i><i></i><i></i>';chat.appendChild(t);chat.scrollTop=chat.scrollHeight}
     else if(!on&&t)t.remove();
   }
+  var att=[],chips=d.querySelector('.aichips'),fi=d.querySelector('.aifile');
+  function drawChips(){chips.innerHTML='';att.forEach(function(a,i){var c=el('span','aichip',a.name+' \u00d7');c.title='Remove';c.onclick=function(){att.splice(i,1);drawChips()};chips.appendChild(c)})}
+  d.querySelector('.aiattach').onclick=function(){fi.click()};
+  fi.onchange=function(){
+    var list=[].slice.call(fi.files);fi.value='';
+    list.reduce(function(p,f){return p.then(function(){
+      if(att.length>=5){add('a','You can attach up to 5 files at once.');return}
+      return readAny(f).then(function(a){att.push(a);drawChips();add('a','Attached '+a.name+'. Ask me anything about it.')}).catch(function(e){add('a',e.message)});
+    })},Promise.resolve());
+  };
   form.onsubmit=function(e){
     e.preventDefault();
     var text=inp.value.trim();
     if(!text||send.disabled)return;
+    
     inp.value='';add('m',text);hist.push({role:'user',content:text});
     send.disabled=true;typing(true);
-    fetch(AI_URL,{method:'POST',headers:{'Content-Type':'application/json','x-astra-token':AI_TOK},body:JSON.stringify({messages:hist.slice(-16)})})
+    fetch(AI_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:hist.slice(-16),files:att})})
       .then(function(r){return r.json().catch(function(){return{}}).then(function(j){
         if(!r.ok||j.error)throw new Error(j.error||('Server error '+r.status));
         return j;
@@ -444,7 +507,59 @@ document.addEventListener('keydown',function(e){
   if(prefs.panic&&e.key==='`'){e.preventDefault();$('panic').classList.toggle('on')}
 });
 
-renderQuick();renderTabs();renderPrefs();applyCloak();applyAccent();
+/* ---- Files: Supabase (if SB_KEY set) or IndexedDB on this device ---- */
+var MAXMB=50;
+function fmt(n){var u=['B','KB','MB','GB'],i=0;while(n>=1024&&i<3){n/=1024;i++}return (i?n.toFixed(1):n)+' '+u[i]}
+var idb=null;
+function db(){return idb||(idb=new Promise(function(ok,no){var q=indexedDB.open('astra_files',1);q.onupgradeneeded=function(){q.result.createObjectStore('f',{keyPath:'id'})};q.onsuccess=function(){ok(q.result)};q.onerror=function(){no(q.error)}}))}
+function tx(m,fn){return db().then(function(d){return new Promise(function(ok,no){var t=d.transaction('f',m),r=fn(t.objectStore('f'));t.oncomplete=function(){ok(r.result)};t.onerror=function(){no(t.error)}})})}
+var Local={
+  list:function(){return tx('readonly',function(s){return s.getAll()}).then(function(a){return a.map(function(f){return{id:f.id,name:f.name,size:f.blob.size,type:f.blob.type,at:f.at}}).sort(function(a,b){return b.at-a.at})})},
+  put:function(file){return tx('readwrite',function(s){return s.put({id:crypto.randomUUID(),name:file.name,blob:file,at:Date.now()})})},
+  get:function(f){return tx('readonly',function(s){return s.get(f.id)}).then(function(r){return r.blob})},
+  del:function(f){return tx('readwrite',function(s){return s.delete(f.id)})}
+};
+var S=Local,fl=$('flist'),fs=$('fstat'),drop=$('drop'),fin=$('fin');
+$('fmode').textContent='\u00b7 this device';
+function say(t,bad){fs.textContent=t;fs.className=bad?'bad':''}
+function renderFiles(){
+  S.list().then(function(a){
+    fl.innerHTML='';
+    if(!a.length){fl.appendChild(el('div','none','No files yet.'));return}
+    a.forEach(function(f){
+      var r=el('div','frow'),m=el('div','fm'),ext=(f.name.indexOf('.')>-1?f.name.split('.').pop():'file').slice(0,4).toUpperCase();
+      m.append(el('div','fn',f.name),el('small','',fmt(f.size)));
+      var o=el('button','x','\u2197'),d=el('button','x','\u2193'),x=el('button','x','\u00d7');
+      o.title='Open in a tab';d.title='Download';x.title='Delete';
+      o.onclick=function(){S.get(f).then(function(b){addTab(URL.createObjectURL(b),f.name)}).catch(function(e){say(e.message,1)})};
+      d.onclick=function(){S.get(f).then(function(b){var l=document.createElement('a');l.href=URL.createObjectURL(b);l.download=f.name;document.body.appendChild(l);l.click();l.remove()}).catch(function(e){say(e.message,1)})};
+      x.onclick=function(){S.del(f).then(renderFiles).catch(function(e){say(e.message,1)})};
+      r.append(el('span','fi',ext),m,o,d,x);fl.appendChild(r);
+    });
+  }).catch(function(e){say('Could not load files: '+e.message,1)});
+}
+function upload(files){
+  files=[].slice.call(files);var i=0;
+  (function next(){
+    if(i>=files.length){say('Done');renderFiles();return}
+    var f=files[i++];
+    if(f.size>MAXMB*1048576){say(f.name+' is over '+MAXMB+' MB',1);return next()}
+    say('Uploading '+f.name+' ('+i+'/'+files.length+')...');
+    S.put(f).then(next).catch(function(e){say('Upload failed: '+e.message,1)});
+  })();
+}
+drop.onclick=function(){fin.click()};
+drop.onkeydown=function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();fin.click()}};
+fin.onclick=function(e){e.stopPropagation()};
+fin.onchange=function(){upload(fin.files);fin.value=''};
+document.addEventListener('dragover',function(e){e.preventDefault();drop.classList.toggle('over',drop.contains(e.target))});
+document.addEventListener('dragleave',function(e){if(!e.relatedTarget)drop.classList.remove('over')});
+document.addEventListener('drop',function(e){
+  e.preventDefault();drop.classList.remove('over');
+  if(e.dataTransfer&&e.dataTransfer.files.length){setMenu(true);upload(e.dataTransfer.files)}
+});
+
+renderQuick();renderTabs();renderPrefs();applyCloak();applyAccent();renderFiles();
 <\/script>
 </body>
 </html>
