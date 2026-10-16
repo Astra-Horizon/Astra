@@ -27,7 +27,7 @@ button:focus-visible{outline:3px solid #fff;outline-offset:4px}
 <body>
 <main id="gate" hidden>
   <div class="face" aria-hidden="true">😠</div>
-  <h1>ALLOW POPUPS NOW</h1>
+  <h1>ALLOW POPUPS NOW!</h1>
   <p>Astra needs pop-ups to launch. Allow them once and it will open by itself every time after this.</p>
   <ol>
     <li>Click the blocked pop-up icon in your address bar</li>
@@ -37,11 +37,7 @@ button:focus-visible{outline:3px solid #fff;outline-offset:4px}
   <button id="retry">I allowed them, open it</button>
 </main>
 
-<main id="done" hidden>
-  <h1>Astra is open</h1>
-  <p>Your session is running in the other tab.</p>
-  <button id="again">Open again</button>
-</main>
+<main id="done" hidden></main>
 
 <div id="note" style="position:fixed;left:0;right:0;bottom:18px;text-align:center"></div>
 
@@ -88,7 +84,6 @@ function tryOpen(){
 }
 
 $('retry').onclick=function(){if(!tryOpen())note.textContent='Still blocked. Allow pop-ups for this site, then click again.'};
-$('again').onclick=function(){isOpen=false;if(!tryOpen()){note.textContent='Pop-up blocked. Allow pop-ups, then try again.'}};
 
 /* every visit: open straight away. If pop-ups were never allowed (or got revoked) this fails and the gate shows. */
 tryOpen();
