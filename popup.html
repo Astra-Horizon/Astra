@@ -121,15 +121,45 @@ button:focus-visible,input:focus-visible{outline:2px solid #fff;outline-offset:2
 .fi{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:#fff;color:#000;font-size:9px;font-weight:800;flex:none}
 .fm{flex:1;min-width:0}.fn{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600;font-size:12.5px}.fm small{color:var(--dim);font-size:11px}
 #unb{position:fixed;inset:0;z-index:9990;background:#000;opacity:0;visibility:hidden;display:none;transition:opacity .8s,visibility .8s;overflow:hidden}
-#unb.on{opacity:1;visibility:visible;transition:opacity .35s,visibility 0s}
-#unbc{position:absolute;inset:0;width:100%;height:100%}
-#unbh{position:absolute;left:50%;top:42%;width:0;height:0;--h:120px;transform:scale(.05);opacity:0;will-change:transform}
+#unb.on{opacity:1;visibility:visible;transition:opacity .3s,visibility 0s}
+#unbs{position:absolute;inset:0}
+#unbs.shake{animation:ushake .5s linear}
+@keyframes ushake{0%,100%{transform:translate(0)}10%{transform:translate(-6px,3px)}20%{transform:translate(5px,-4px)}30%{transform:translate(-4px,-2px)}40%{transform:translate(6px,3px)}50%{transform:translate(-5px,4px)}60%{transform:translate(4px,-3px)}70%{transform:translate(-3px,2px)}80%{transform:translate(2px,-2px)}90%{transform:translate(-1px,1px)}}
+#unbterm{position:absolute;top:22px;left:24px;right:24px;font:13px/1.55 ui-monospace,Menlo,Consolas,monospace;color:#d6d6dc;text-shadow:0 0 8px rgba(255,255,255,.2);white-space:pre-wrap;transition:opacity .6s}
+@media(min-width:700px){#unbterm{font-size:15px}}
+#unbterm.out{opacity:0}
+.tl{min-height:1.55em}
+.tl.p{color:#fff}
+.tl.dim{color:#9b9ba5}
+.tl.err{color:#ff5c6e;font-weight:800;font-size:1.25em;text-shadow:0 0 14px rgba(255,92,110,.7);animation:uerr .1s steps(2) 6}
+@keyframes uerr{0%{transform:translateX(0)}50%{transform:translateX(3px)}100%{transform:translateX(-3px)}}
+.cur{display:inline-block;width:.6em;height:1.1em;margin-left:2px;vertical-align:-.18em;background:#fff;animation:ublink .9s steps(1) infinite}
+@keyframes ublink{50%{opacity:0}}
+#unbcrack{position:absolute;inset:0;width:100%;height:100%;transition:opacity 1s}
+#unbcrack.dim{opacity:.22}
+#unbcrack .k{fill:none;stroke:#fff;stroke-width:var(--w);stroke-linejoin:round;stroke-linecap:round;opacity:var(--o);stroke-dasharray:1;stroke-dashoffset:1;visibility:hidden}
+#unbcrack.on .k{visibility:visible;animation:ucrack .5s cubic-bezier(.2,.8,.2,1) var(--d) forwards}
+@keyframes ucrack{to{stroke-dashoffset:0}}
+#unbflash{position:absolute;inset:0;pointer-events:none;opacity:0;background:radial-gradient(circle at 50% 42%,rgba(255,255,255,.55),rgba(255,255,255,0) 55%)}
+#unbflash.go{animation:uflash .5s ease-out}
+@keyframes uflash{0%{opacity:1}100%{opacity:0}}
+#unbhole{position:absolute;left:50%;top:42%;width:0;height:0;transform:scale(.02);opacity:0;will-change:transform}
+#unbhole.on{opacity:1;transform:scale(1);transition:transform 1.3s cubic-bezier(.6,.02,.25,1),opacity .25s}
+#unbhole .dsk{position:absolute;left:calc(var(--R)*-3.4);top:calc(var(--R)*-3.4);width:calc(var(--R)*6.8);height:calc(var(--R)*6.8);border-radius:50%;background:radial-gradient(closest-side,transparent 0 24%,rgba(255,255,255,.95) 28%,rgba(255,255,255,.5) 38%,rgba(255,255,255,.14) 62%,transparent 100%);transform:rotate(-18deg) scaleY(.16);animation:udp 3.2s ease-in-out infinite alternate}
+@keyframes udp{to{opacity:.7}}
+#unbhole .core{position:absolute;left:calc(var(--R)*-1);top:calc(var(--R)*-1);width:calc(var(--R)*2);height:calc(var(--R)*2);border-radius:50%;background:#000;box-shadow:0 0 0 2px #fff,0 0 calc(var(--R)*.5) calc(var(--R)*.05) rgba(255,255,255,.5),0 0 calc(var(--R)*1.5) calc(var(--R)*.1) rgba(255,255,255,.14)}
 #unbt{position:absolute;left:0;right:0;text-align:center;pointer-events:none}
 #unbt .ua{font-family:var(--head);font-weight:800;font-size:clamp(2.4rem,9vw,4.6rem);letter-spacing:-.03em;line-height:1.05;background:linear-gradient(180deg,#fff 5%,#b9b9c3 95%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 0 28px rgba(255,255,255,.55));opacity:0;transform:translateY(12px);transition:opacity .9s,transform .9s}
 #unbt .ub{margin-top:.55rem;font-weight:800;font-size:clamp(.78rem,2.6vw,1.05rem);letter-spacing:.42em;text-transform:uppercase;color:var(--dim);opacity:0;transform:translateY(8px);transition:opacity .9s .55s,transform .9s .55s}
 #unbt.on .ua,#unbt.on .ub{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){#unbs.shake,#unbflash.go,.tl.err{animation:none}}
 #toast{position:fixed;left:50%;bottom:22px;z-index:9995;transform:translate(-50%,12px);max-width:min(440px,90vw);padding:10px 16px;border-radius:14px;background:rgba(20,20,24,.95);border:1px solid rgba(255,255,255,.22);color:#fff;font-size:13px;font-weight:600;text-align:center;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s}
 #toast.on{opacity:1;transform:translate(-50%,0)}
+#warn{position:fixed;top:14px;left:14px;right:80px;max-width:520px;z-index:55;display:none;padding:12px 14px;border-radius:16px;background:rgba(20,20,24,.96);border:1px solid rgba(255,92,110,.45);box-shadow:0 14px 40px rgba(0,0,0,.6);font-size:13px;line-height:1.45}
+#warn.on{display:block}
+#warn .wb{display:flex;gap:8px;margin-top:10px}
+.wbt{height:30px;padding:0 12px;border-radius:999px;border:0;background:#fff;color:#000;font-weight:800;font-size:12px;cursor:pointer}
+.wbt.g{background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.22)}
 </style>
 </head>
 <body>
@@ -147,10 +177,15 @@ button:focus-visible,input:focus-visible{outline:2px solid #fff;outline-offset:2
 <div id="panic"></div>
 <div id="toast" role="status" aria-live="polite"></div>
 <div id="unb" aria-hidden="true">
-  <canvas id="unbc"></canvas>
-  <div id="unbh"><div class="bh"><div class="halo"></div><div class="dk b"></div><div class="ln"></div><div class="ar u"></div><div class="ar l"></div><div class="hl"></div><div class="dk f"></div></div></div>
-  <div id="unbt"><div class="ua">Astra</div><div class="ub">Unblocker</div></div>
+  <div id="unbs">
+    <svg id="unbcrack" xmlns="http://www.w3.org/2000/svg"></svg>
+    <div id="unbhole"><div class="dsk"></div><div class="core"></div></div>
+    <div id="unbt"><div class="ua">Astra</div><div class="ub">Unblocker</div></div>
+    <div id="unbterm"></div>
+    <div id="unbflash"></div>
+  </div>
 </div>
+<div id="warn" role="alert"><div id="warnmsg"></div><div class="wb"><button class="wbt" id="warnoff">Turn off Unblocker</button><button class="wbt g" id="warnx">Dismiss</button></div></div>
 
 <div id="menu" role="dialog" aria-label="Astra menu">
   <div class="mh"><div class="mark" aria-hidden="true"><div class="bh"><div class="dk b"></div><div class="ln"></div><div class="ar u"></div><div class="ar l"></div><div class="hl"></div><div class="dk f"></div></div></div>Astra</div>
@@ -224,6 +259,7 @@ function addTab(url,name){
   f.id=id;f.setAttribute('allow',ALLOW);
   applySandbox(f);f.src=proxyUrl(url);view.appendChild(f);
   tabs.push({id:id,name:name||nameOf(url),url:url});
+  watchTab(tabs[tabs.length-1]);
   addr.value='';switchTab(tabs.length-1);setMenu(false);
 }
 function switchTab(i){
@@ -336,7 +372,9 @@ var SB_URL='https://nzctnrhudojfsilcorio.supabase.co',SB_KEY='sb_publishable_dFT
 var PROXY_BASE=null,USE_CORS_PROXY=false,unbOn=false,unbBusy=false;
 function proxyUrl(url){
   if(!USE_CORS_PROXY||!PROXY_BASE)return url;
-  if(!url||url.indexOf(PROXY_BASE)===0||/^(data:|blob:|javascript:|about:|#)/i.test(url))return url;
+  if(!url||typeof url!=='string')return url;
+  if(url.indexOf(PROXY_BASE)===0)return url;
+  if(/^(data:|blob:|javascript:|mailto:|tel:|about:|#)/i.test(url))return url;
   return PROXY_BASE+'/'+url;
 }
 function getRoute(){
@@ -353,85 +391,106 @@ function reroute(){
   tabs.forEach(function(t){
     var f=$(t.id);if(!f||!t.url)return;
     var want=proxyUrl(t.url);
-    if(f.getAttribute('src')!==want)f.src=want;
+    if(f.getAttribute('src')!==want){f.src=want;if(want!==t.url)watchTab(t)}
   });
 }
 var toastT=0;
 function toast(m){var t=$('toast');t.textContent=m;t.classList.add('on');clearTimeout(toastT);toastT=setTimeout(function(){t.classList.remove('on')},3800)}
 
-/* decorative routing logs for the intro animation */
-var UH=['fra-02','ams-11','lhr-07','iad-03','sin-05','nrt-09','syd-02','gru-04','ord-12','cdg-06','yyz-08','hkg-01'];
-var UP=['index.html','assets/app.js','api/session','static/main.css','video/seg_0042.ts','img/hero.webp','socket','manifest.json'];
-function upick(a){return a[Math.floor(Math.random()*a.length)]}
-function uint(a,b){return a+Math.floor(Math.random()*(b-a+1))}
-function uhex(n){var s='';while(n--)s+=Math.floor(Math.random()*16).toString(16);return s}
-function uip(){return uint(23,223)+'.'+uint(0,255)+'.'+uint(0,255)+'.'+uint(1,254)}
-function ulog(){
-  var d=new Date(),pd=function(n,l){return String(n).padStart(l||2,'0')};
-  var st='['+pd(d.getSeconds())+'.'+pd(d.getMilliseconds(),3)+'] ',h1=upick(UH),h2=upick(UH);
-  switch(Math.floor(Math.random()*10)){
-    case 0:return st+'ROUTE  switching edge '+h1+' -> '+h2;
-    case 1:return st+'ROUTE  rerouting via '+h1+' (rtt '+uint(9,140)+'ms)';
-    case 2:return st+'TUNNEL handshake ok '+uint(12,90)+'ms';
-    case 3:return st+'REQ    GET /'+upick(UP)+' 200 '+uint(8,70)+'ms';
-    case 4:return st+'DNS    resolve host -> '+uip();
-    case 5:return st+'PROXY  rotating exit node '+uint(1,64)+' -> '+uint(1,64);
-    case 6:return st+'REWRITE stripped frame + csp headers';
-    case 7:return st+'TLS    session resumed '+uhex(10);
-    case 8:return st+'CACHE  hit '+uhex(6)+' ('+uint(1,900)+' kb)';
-    default:return st+'SYNC   upstream '+uip()+':443 alive';
-  }
+/* ---- if a tab fails through Unblocker, check whether the site itself blocks framing and say if turning Unblocker off can help ---- */
+function hostOf(u){try{return new URL(u).hostname.replace(/^www\./,'')}catch(e){return 'this site'}}
+function frameCheck(url){
+  /* one plain fetch through the route; headers only, body is cancelled */
+  var ac=new AbortController(),tm=setTimeout(function(){ac.abort()},9000);
+  return fetch(proxyUrl(url),{signal:ac.signal}).then(function(r){
+    clearTimeout(tm);
+    var xfo=r.headers.get('x-frame-options')||'',csp=r.headers.get('content-security-policy')||'',fa=/frame-ancestors\s+([^;]+)/i.exec(csp);
+    try{ac.abort()}catch(e){}
+    return {ok:r.ok,status:r.status,blocks:/deny|sameorigin/i.test(xfo)||!!(fa&&!/(^|\s)\*(\s|$)/.test(fa[1]))};
+  },function(e){clearTimeout(tm);throw e});
+}
+function watchTab(t){
+  if(!USE_CORS_PROXY||!PROXY_BASE||!/^https?:\/\//i.test(t.url||''))return;
+  frameCheck(t.url).then(function(r){if(!r.ok)warnFail(t,r)},function(e){warnFail(t,{err:e})});
+}
+function warnFail(t,r){
+  if(!USE_CORS_PROXY||!$(t.id))return;
+  var h=hostOf(t.url),blocks=!!r.blocks,msg,
+      why=r.err?(r.err.name==='AbortError'?'timed out':'could not connect'):'returned error '+r.status;
+  if(blocks)msg=h+' failed through Unblocker ('+why+'), and the site itself blocks being shown inside other pages. Turning Unblocker off will not fix it.';
+  else if(r.err)msg=h+' failed through Unblocker ('+why+'). I could not read its frame settings, so I cannot tell if the site blocks embedding. Turning Unblocker off may work, but some sites will not load in a frame either way.';
+  else msg=h+' failed through Unblocker ('+why+'). I did not see any frame-blocking headers, so turning Unblocker off may work (the route can hide those headers, so I cannot be sure).';
+  $('warnmsg').textContent=msg;$('warnoff').style.display=blocks?'none':'';$('warn').classList.add('on');
 }
 
-/* logs spiral into a black hole that grows as it eats them; then "Astra / Unblocker" appears under it */
+/* ---- intro: terminal typing -> Loading % -> ERROR breach -> crack -> black hole -> Astra / Unblocker ----
+   Built from CSS transitions and a few text nodes (no per-frame canvas), so it stays smooth. */
+var UH=['fra-02','ams-11','lhr-07','iad-03','sin-05','nrt-09','syd-02','gru-04','ord-12','cdg-06','yyz-08','hkg-01'];
+function upick(a){return a[Math.floor(Math.random()*a.length)]}
+function uhex(n){var s='';while(n--)s+=Math.floor(Math.random()*16).toString(16);return s}
+var CRK=['50,42 53,38 51,33 56,29 54,22 60,17 58,9 63,4 62,-2','50,42 55,45 59,43 64,48 69,46 74,52 81,50 87,56 93,55 102,59','50,42 47,47 48,53 42,57 44,64 38,69 40,77 34,83 35,91 31,102','50,42 45,39 39,41 34,36 27,38 21,32 14,33 8,27 -2,26','50,42 56,40 62,36 69,37 75,31 83,30 90,24 102,21','50,42 44,45 37,47 30,52 22,50 14,56 7,54 -2,60','50,42 52,49 57,54 56,61 62,67 61,75 67,82 66,90 70,102','50,42 50,36 46,31 47,24 42,18 43,10 39,4 40,-2',
+ '54,22 50,19 51,13','64,48 66,55 63,60','44,64 49,68 48,74','27,38 25,44 19,46','69,37 72,42 78,43','30,52 28,58 31,64','57,54 63,52 67,56','81,50 84,44 90,43'];
+function buildCrack(svg,W,H){
+  svg.setAttribute('viewBox','0 0 '+W+' '+H);svg.innerHTML='';
+  CRK.forEach(function(sp,i){
+    var pts=sp.split(' ').map(function(q){var a=q.split(',');return (a[0]*W/100).toFixed(1)+' '+(a[1]*H/100).toFixed(1)}),
+        d='M'+pts.join(' L'),br=i>=8;
+    [[br?3:6,.16],[br?1.2:2,1]].forEach(function(o){
+      var el2=document.createElementNS('http://www.w3.org/2000/svg','path');
+      el2.setAttribute('d',d);el2.setAttribute('pathLength','1');el2.setAttribute('class','k');
+      el2.style.cssText='--d:'+(br?260+(i-8)*35:i*28)+'ms;--w:'+o[0]+'px;--o:'+o[1];
+      svg.appendChild(el2);
+    });
+  });
+}
 function playUnb(){
-  var ov=$('unb'),cv=$('unbc'),c2=cv.getContext('2d'),wrap=$('unbh'),txt=$('unbt');
-  var dpr=Math.min(devicePixelRatio||1,2),W=innerWidth,H=innerHeight,TAUu=Math.PI*2;
-  cv.width=Math.round(W*dpr);cv.height=Math.round(H*dpr);c2.setTransform(dpr,0,0,dpr,0,0);
-  var CXp=W/2,CYp=H*.42,R0=Math.hypot(W,H)*.56;
-  var target=Math.max(110,Math.min(W*.34,H*.3,300)),smin=.05,smax=target/120;
-  txt.style.top=(CYp+target/2+34)+'px';txt.classList.remove('on');
-  wrap.style.transform='scale('+smin+')';wrap.style.opacity=0;
+  var ov=$('unb'),box=$('unbs'),term=$('unbterm'),crack=$('unbcrack'),flash=$('unbflash'),hole=$('unbhole'),txt=$('unbt');
+  var W=innerWidth,H=innerHeight,stop=false,timers=[],R=Math.max(55,Math.min(W*.17,H*.15,150));
+  ov.style.setProperty('--R',R+'px');txt.style.top=(H*.42+R+34)+'px';
+  box.classList.remove('shake');term.className='';term.innerHTML='';crack.setAttribute('class','');
+  hole.classList.remove('on');txt.classList.remove('on');flash.classList.remove('go');
+  buildCrack(crack,W,H);
   ov.style.display='block';void ov.offsetWidth;ov.classList.add('on');
-  var lines=[],absorbed=0,t=0,prev=0,sm=0,shown=false,stop=false,acc=0,raf=0,rdy;
-  var ready=new Promise(function(r){rdy=r});
-  function spawn(init){
-    lines.push({t:ulog(),r:init?R0*(.25+Math.random()*.7):R0*(.96+Math.random()*.08),th:Math.random()*TAUu,
-      sp:.8+Math.random()*.5,fs:10+Math.random()*5,a:.45+Math.random()*.5,age:0});
+  var rdy,ready=new Promise(function(r){rdy=r});
+  function wait(ms){return new Promise(function(r){timers.push(setTimeout(r,ms))})}
+  var cur=document.createElement('span');cur.className='cur';
+  function line(cls){var d=document.createElement('div'),n=document.createTextNode('');d.className='tl'+(cls?' '+cls:'');d.appendChild(n);d.appendChild(cur);term.appendChild(d);return n}
+  function typeTo(n,text,ms){return new Promise(function(res){var i=0;(function step(){n.data=text.slice(0,++i);if(i<text.length)timers.push(setTimeout(step,ms*(.6+Math.random()*.8)));else res()})()})}
+  function bar(v){var f=Math.round(v*.28);return 'Loading '+('  '+v).slice(-3)+'%  ['+'\u2588'.repeat(f)+'\u2591'.repeat(28-f)+']'}
+  function count(n,to,dur){
+    return new Promise(function(res){
+      var t0=0,last=-1;n.data=bar(0);
+      requestAnimationFrame(function tick(ts){
+        if(stop)return;if(!t0)t0=ts;
+        var u=Math.min(1,(ts-t0)/dur),v=Math.round(to*(1-Math.pow(1-u,1.6)));
+        if(v!==last){last=v;n.data=bar(v)}
+        if(u<1)requestAnimationFrame(tick);else res();
+      });
+    });
   }
-  for(var k=0;k<22;k++)spawn(true);
-  function frame(ts){
-    if(stop)return;
-    raf=requestAnimationFrame(frame);
-    var dt=prev?Math.min(.05,(ts-prev)/1000):.016;prev=ts;t+=dt;
-    var prog=Math.min(1,Math.max(absorbed/45,t/5));
-    sm+=(prog-sm)*Math.min(1,dt*3.2);
-    var e=sm*sm*(3-2*sm),sc=smin+(smax-smin)*e,core=60*sc;
-    wrap.style.transform='scale('+sc.toFixed(3)+')';
-    wrap.style.opacity=Math.min(1,t/.9);
-    c2.clearRect(0,0,W,H);
-    acc+=dt*(10+14*sm);
-    while(acc>=1){acc-=1;if(lines.length<70)spawn(false)}
-    c2.textAlign='center';c2.textBaseline='middle';
-    for(var i=lines.length-1;i>=0;i--){
-      var L=lines[i],q=Math.max(0,1-L.r/R0);
-      L.r-=(110+1150*q*q)*dt*L.sp;L.th+=(.28+2.2*q*q)*dt;L.age+=dt;
-      if(L.r<Math.max(core*.92,6)){lines.splice(i,1);absorbed++;continue}
-      var cs=Math.cos(L.th),sn=Math.sin(L.th),x=CXp+L.r*cs,y=CYp+L.r*sn*.8;
-      var ang=Math.atan2(cs*.8,-sn);if(Math.cos(ang)<0)ang+=Math.PI;
-      var s2=Math.max(.12,Math.min(1,(L.r-core)/(core*2.5+90)));
-      var a=L.a*Math.min(1,(L.r-core)/(core*.9+30))*Math.min(1,L.age*1.5);
-      if(a<=.01)continue;
-      c2.save();c2.translate(x,y);c2.rotate(ang);c2.scale(1+(1-s2)*1.6,s2);
-      c2.globalAlpha=a;c2.fillStyle=L.t.indexOf('ROUTE')>-1?'#fff':'#bfc0c8';
-      c2.font=L.fs+'px ui-monospace,Menlo,Consolas,monospace';c2.fillText(L.t,0,0);c2.restore();
-    }
-    if(!shown&&sm>.985&&t>2.5){shown=true;txt.classList.add('on');setTimeout(rdy,1900)}
-  }
-  raf=requestAnimationFrame(frame);
+  (async function(){
+    await wait(150);
+    var a=line('p');await typeTo(a,'> astra --unblocker --enable',16);await wait(130);
+    var b=line();await typeTo(b,'connecting to routing layer ... ok',9);await wait(80);
+    var c=line();await typeTo(c,'selecting exit node ... '+upick(UH),9);await wait(100);
+    var ld=line();await count(ld,58+Math.floor(Math.random()*18),1500);
+    await wait(280);
+    box.classList.add('shake');
+    var e1=line('err');await typeTo(e1,'ERROR: BREACH DETECTED',9);
+    var e2=line('dim');await typeTo(e2,'integrity check failed @ 0x'+uhex(6)+' - containment lost',7);
+    await wait(350);
+    box.classList.remove('shake');
+    flash.classList.add('go');crack.setAttribute('class','on');
+    await wait(650);
+    hole.classList.add('on');term.classList.add('out');crack.setAttribute('class','on dim');
+    await wait(1300);
+    txt.classList.add('on');
+    await wait(1700);
+    rdy();
+  })().catch(function(){rdy()});
   function end(){
-    if(stop)return;stop=true;cancelAnimationFrame(raf);
-    ov.classList.remove('on');txt.classList.remove('on');
+    if(stop)return;stop=true;timers.forEach(clearTimeout);
+    ov.classList.remove('on');
     setTimeout(function(){if(!ov.classList.contains('on'))ov.style.display='none'},900);
   }
   return {ready:ready,end:end};
@@ -440,7 +499,7 @@ function setUnbSwitch(v){$('swUnb').classList.toggle('on',v)}
 function toggleUnb(){
   if(unbBusy)return;
   if(unbOn){
-    unbOn=false;USE_CORS_PROXY=false;setUnbSwitch(false);reroute();toast('Unblocker off');return;
+    unbOn=false;USE_CORS_PROXY=false;setUnbSwitch(false);$('warn').classList.remove('on');reroute();toast('Unblocker off');return;
   }
   unbBusy=true;setUnbSwitch(true);setMenu(false);
   var anim=playUnb();
@@ -459,6 +518,8 @@ scrim.onclick=function(){setMenu(false)};
 $('newTab').onclick=function(){addTab()};
 $('swFix').onclick=toggleFix;
 $('swUnb').onclick=toggleUnb;
+$('warnx').onclick=function(){$('warn').classList.remove('on')};
+$('warnoff').onclick=function(){$('warn').classList.remove('on');if(unbOn)toggleUnb()};
 $('kill').onclick=function(){window.close()};
 addr.addEventListener('keydown',function(e){if(e.key==='Enter')addTab()});
 document.addEventListener('keydown',function(e){
