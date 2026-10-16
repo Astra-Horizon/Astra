@@ -62,7 +62,7 @@ function setView(open){
 function tryOpen(){
   if(isOpen)return false;
   var w=null;
-  try{w=window.open('about:blank','_blank')}catch(e){}
+  try{w=window.open('about:blank','_blank','popup=yes,width=1280,height=720,left='+Math.max(0,(screen.width-1280)/2)+',top='+Math.max(0,(screen.height-720)/2))}catch(e){}
   if(!w||w.closed){setView(false);return false}
 
   try{localStorage.setItem(KEY,'1')}catch(e){}
