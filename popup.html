@@ -104,25 +104,6 @@ button:focus-visible,input:focus-visible{outline:2px solid #fff;outline-offset:2
 .swatch.on{border-color:#fff;box-shadow:0 0 0 2px #000,0 0 0 4px #fff}
 .lrow{display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:10px;background:rgba(255,255,255,.05);font-size:12px}
 .lrow span{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.aipanel{position:absolute;inset:0;width:100%;height:100%;background:#000;display:none;flex-direction:column}
-.aipanel.on{display:flex}
-.aihead{display:flex;align-items:center;gap:10px;padding:14px 18px;border-bottom:1px solid rgba(255,255,255,.14);flex:none}
-.aihead svg{width:24px;height:24px;flex:none}
-.aihead b{font-family:var(--head);font-size:1.05rem;font-weight:800;letter-spacing:-.02em}
-.aihead small{color:var(--dim);font-size:.68rem;font-weight:800;letter-spacing:.14em;margin-left:auto}
-.aichat{flex:1;overflow-y:auto;padding:18px;display:flex;flex-direction:column;gap:10px;scrollbar-width:thin}
-.aimsg{max-width:82%;padding:10px 14px;border-radius:16px;line-height:1.5;white-space:pre-wrap;word-wrap:break-word}
-.aimsg.a{align-self:flex-start;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);-webkit-user-select:text;user-select:text}
-.aimsg.m{align-self:flex-end;background:#fff;color:#000;font-weight:600}
-.aityping{display:flex;gap:4px;padding:12px 14px;align-self:flex-start}
-.aityping i{width:6px;height:6px;border-radius:50%;background:#fff;animation:aibl 1s infinite}
-.aityping i:nth-child(2){animation-delay:.15s}.aityping i:nth-child(3){animation-delay:.3s}
-@keyframes aibl{0%,100%{opacity:.25}50%{opacity:1}}
-.aiform{display:flex;gap:8px;padding:12px;border-top:1px solid rgba(255,255,255,.14);flex:none}
-.aiform input{flex:1;height:42px;border-radius:12px;border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.07);color:var(--text);font:inherit;padding:0 14px;outline:0}
-.aiform input:focus{border-color:#fff;background:rgba(255,255,255,.1)}
-.aiform button{height:42px;padding:0 18px;border:0;border-radius:12px;background:#fff;color:#000;font:inherit;font-weight:800;cursor:pointer}
-.aiform button:disabled{opacity:.4;cursor:default}
 #panic{position:fixed;inset:0;z-index:9999;background:#fff;display:none}
 #panic.on{display:block}
 #menu{width:min(380px,calc(100vw - 28px));padding:18px;border-radius:26px;background:linear-gradient(180deg,rgba(24,24,28,.96),rgba(8,8,10,.97))}
@@ -139,12 +120,16 @@ button:focus-visible,input:focus-visible{outline:2px solid #fff;outline-offset:2
 .frow:hover{background:rgba(255,255,255,.12)}
 .fi{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:#fff;color:#000;font-size:9px;font-weight:800;flex:none}
 .fm{flex:1;min-width:0}.fn{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600;font-size:12.5px}.fm small{color:var(--dim);font-size:11px}
-.aichips{display:flex;flex-wrap:wrap;gap:6px;padding:0 12px}
-.aichips:not(:empty){padding:8px 12px 0;border-top:1px solid rgba(255,255,255,.14)}
-.aichip{padding:5px 11px;border-radius:999px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);font-size:12px;font-weight:600;cursor:pointer;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.aichip:hover{background:rgba(255,92,110,.35)}
-.aiform .aiattach{width:42px;padding:0;font-size:22px;background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.22)}
-.aiform .aiattach:hover{background:rgba(255,255,255,.2)}
+#unb{position:fixed;inset:0;z-index:9990;background:#000;opacity:0;visibility:hidden;display:none;transition:opacity .8s,visibility .8s;overflow:hidden}
+#unb.on{opacity:1;visibility:visible;transition:opacity .35s,visibility 0s}
+#unbc{position:absolute;inset:0;width:100%;height:100%}
+#unbh{position:absolute;left:50%;top:42%;width:0;height:0;--h:120px;transform:scale(.05);opacity:0;will-change:transform}
+#unbt{position:absolute;left:0;right:0;text-align:center;pointer-events:none}
+#unbt .ua{font-family:var(--head);font-weight:800;font-size:clamp(2.4rem,9vw,4.6rem);letter-spacing:-.03em;line-height:1.05;background:linear-gradient(180deg,#fff 5%,#b9b9c3 95%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 0 28px rgba(255,255,255,.55));opacity:0;transform:translateY(12px);transition:opacity .9s,transform .9s}
+#unbt .ub{margin-top:.55rem;font-weight:800;font-size:clamp(.78rem,2.6vw,1.05rem);letter-spacing:.42em;text-transform:uppercase;color:var(--dim);opacity:0;transform:translateY(8px);transition:opacity .9s .55s,transform .9s .55s}
+#unbt.on .ua,#unbt.on .ub{opacity:1;transform:none}
+#toast{position:fixed;left:50%;bottom:22px;z-index:9995;transform:translate(-50%,12px);max-width:min(440px,90vw);padding:10px 16px;border-radius:14px;background:rgba(20,20,24,.95);border:1px solid rgba(255,255,255,.22);color:#fff;font-size:13px;font-weight:600;text-align:center;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s}
+#toast.on{opacity:1;transform:translate(-50%,0)}
 </style>
 </head>
 <body>
@@ -160,6 +145,12 @@ button:focus-visible,input:focus-visible{outline:2px solid #fff;outline-offset:2
 <div id="scrim"></div>
 <button id="orb" aria-label="Open menu" title="Menu"><b></b><b></b><b></b></button>
 <div id="panic"></div>
+<div id="toast" role="status" aria-live="polite"></div>
+<div id="unb" aria-hidden="true">
+  <canvas id="unbc"></canvas>
+  <div id="unbh"><div class="bh"><div class="halo"></div><div class="dk b"></div><div class="ln"></div><div class="ar u"></div><div class="ar l"></div><div class="hl"></div><div class="dk f"></div></div></div>
+  <div id="unbt"><div class="ua">Astra</div><div class="ub">Unblocker</div></div>
+</div>
 
 <div id="menu" role="dialog" aria-label="Astra menu">
   <div class="mh"><div class="mark" aria-hidden="true"><div class="bh"><div class="dk b"></div><div class="ln"></div><div class="ar u"></div><div class="ar l"></div><div class="hl"></div><div class="dk f"></div></div></div>Astra</div>
@@ -176,6 +167,7 @@ button:focus-visible,input:focus-visible{outline:2px solid #fff;outline-offset:2
   <div id="fstat" aria-live="polite"></div><div id="flist"></div>
   <div class="h">Settings</div>
   <div id="prefs"></div>
+  <div class="row"><div>Unblocker<small>A little bit glitchy, but makes a lot more sites work</small></div><button class="sw" id="swUnb" aria-label="Unblocker"></button></div>
   <div class="row"><div>CloudMoon Fix<small>Applies a sandbox to all tabs</small></div><button class="sw" id="swFix" aria-label="CloudMoon Fix"></button></div>
   <button class="kill" id="kill">Kill Session</button>
 </div>
@@ -185,7 +177,7 @@ var $=function(i){return document.getElementById(i)};
 var view=$('view'),menu=$('menu'),scrim=$('scrim'),orb=$('orb'),addr=$('addr'),list=$('tablist');
 var ALLOW='fullscreen; autoplay; clipboard-write; gamepad; microphone; camera; pointer-lock; keyboard-map';
 var COLORS=['#2b2b2b','#3a3a3a','#474747','#555','#333','#444'];
-var QUICK=[['Astra AI','astra-ai'],['CloudMoon','https://web.cloudmoonapp.com/']];
+var QUICK=[['CloudMoon','https://web.cloudmoonapp.com/']];
 var CLOAKS=[['Off','',''],['Google Docs','Untitled document - Google Docs','#4285f4'],['Classroom','Classes','#1e8e3e'],['Google Drive','My Drive - Google Drive','#f9ab00']];
 var ACCENTS=[['#e6e6ec','#ffffff'],['#7cc4ff','#cfe9ff'],['#ffd166','#fff0c2'],['#ff7b9c','#ffd0dc'],['#7dffa8','#d3ffe3']];
 var tabs=[],active=-1,fixEnabled=false;
@@ -230,8 +222,8 @@ function addTab(url,name){
   if(!url)return;
   var id='f'+Date.now()+Math.floor(Math.random()*99),f=el('iframe');
   f.id=id;f.setAttribute('allow',ALLOW);
-  applySandbox(f);f.src=url;view.appendChild(f);
-  tabs.push({id:id,name:name||nameOf(url)});
+  applySandbox(f);f.src=proxyUrl(url);view.appendChild(f);
+  tabs.push({id:id,name:name||nameOf(url),url:url});
   addr.value='';switchTab(tabs.length-1);setMenu(false);
 }
 function switchTab(i){
@@ -262,98 +254,16 @@ function renderQuick(){
   var q=$('quick');q.innerHTML='';
   QUICK.concat(prefs.links).forEach(function(l){
     var b=el('button','t');b.append(avatar(l[0]),l[0]);
-    b.onclick=function(){if(l[1]==='astra-ai')openAI();else addTab(l[1])};q.appendChild(b);
+    b.onclick=function(){addTab(l[1])};q.appendChild(b);
   });
 }
 function toggleFix(){
   fixEnabled=!fixEnabled;
   $('swFix').classList.toggle('on',fixEnabled);
   tabs.forEach(function(t){
-    if(t.ai)return;
     var f=$(t.id),src=f.src;applySandbox(f);f.src='about:blank';
     setTimeout(function(){f.src=src},50);
   });
-}
-
-/* ---- Astra AI: native chat tab, handled by the Supabase edge function ---- */
-var AI_URL='https://nzctnrhudojfsilcorio.supabase.co/functions/v1/astra-ai';
-/* ---- reading attachments for the AI (text, code, PDF, images) ---- */
-var TEXTX=/\.(txt|md|csv|tsv|json|xml|html?|css|js|ts|jsx|tsx|py|java|c|cpp|h|cs|go|rs|rb|php|sql|sh|yml|yaml|toml|ini|log|tex)$/i;
-function loadPdf(){
-  if(window.pdfjsLib)return Promise.resolve(window.pdfjsLib);
-  return new Promise(function(ok,no){
-    var sc=document.createElement('script');sc.src='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
-    sc.onload=function(){pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';ok(pdfjsLib)};
-    sc.onerror=function(){no(new Error('Could not load the PDF reader'))};document.head.appendChild(sc);
-  });
-}
-function pdfText(buf){
-  return loadPdf().then(function(lib){return lib.getDocument({data:buf}).promise}).then(function(doc){
-    var out=[],n=Math.min(doc.numPages,40),i=1;
-    return (function next(){
-      if(i>n)return out.join('\n\n');
-      return doc.getPage(i++).then(function(p){return p.getTextContent()}).then(function(c){out.push(c.items.map(function(x){return x.str}).join(' '));return next()});
-    })();
-  });
-}
-function readAny(f){
-  return new Promise(function(ok,no){
-    var r=new FileReader(),isImg=/^image\//.test(f.type),isPdf=/\.pdf$/i.test(f.name)||f.type==='application/pdf';
-    r.onerror=function(){no(r.error)};
-    if(f.size>(isImg?4:10)*1048576)return no(new Error(f.name+' is too big ('+(isImg?'4':'10')+' MB max)'));
-    if(isImg){r.onload=function(){ok({name:f.name,image:r.result})};r.readAsDataURL(f)}
-    else if(isPdf){r.onload=function(){pdfText(r.result).then(function(t){ok({name:f.name,text:t||'(no readable text in this PDF)'})},no)};r.readAsArrayBuffer(f)}
-    else if(f.type.indexOf('text')===0||TEXTX.test(f.name)){r.onload=function(){ok({name:f.name,text:r.result})};r.readAsText(f)}
-    else no(new Error(f.name+': unsupported type (use text, code, PDF or images)'));
-  });
-}
-function openAI(){
-  for(var i=0;i<tabs.length;i++)if(tabs[i].ai){switchTab(i);setMenu(false);return}
-  var d=el('div','aipanel'),hist=[];
-  d.id='ai'+Date.now();
-  d.innerHTML='<div class="aihead"><svg viewBox="0 0 32 32"><g transform="rotate(-18 16 16)" fill="none" stroke="#fff"><ellipse cx="16" cy="16" rx="14" ry="3.8" stroke-width="1.7"/><circle cx="16" cy="16" r="6.4" fill="#000" stroke-width="1.1"/><path d="M2 16a14 3.8 0 0 0 28 0" stroke-width="2"/></g></svg><b>Astra AI</b><small>ASTRA</small></div>'
-    +'<div class="aichat"><div class="aimsg a">Hey! I\'m Astra AI. Ask me anything - homework, code, ideas, or just chat.</div></div>'
-    +'<div class="aichips"></div><form class="aiform"><button type="button" class="aiattach" title="Attach files" aria-label="Attach files">+</button><input placeholder="Ask about your files, or anything..." autocomplete="off" maxlength="2000" aria-label="Message"><input type="file" class="aifile" multiple hidden><button type="submit">Send</button></form>';
-  view.appendChild(d);
-  tabs.push({id:d.id,name:'Astra AI',ai:true});
-  switchTab(tabs.length-1);setMenu(false);
-  var chat=d.querySelector('.aichat'),form=d.querySelector('.aiform'),inp=d.querySelector('input'),send=d.querySelector('button[type=submit]');
-  function add(cls,text){var m=el('div','aimsg '+cls,text);chat.appendChild(m);chat.scrollTop=chat.scrollHeight}
-  function typing(on){
-    var t=d.querySelector('.aityping');
-    if(on&&!t){t=el('div','aityping');t.innerHTML='<i></i><i></i><i></i>';chat.appendChild(t);chat.scrollTop=chat.scrollHeight}
-    else if(!on&&t)t.remove();
-  }
-  var att=[],chips=d.querySelector('.aichips'),fi=d.querySelector('.aifile');
-  function drawChips(){chips.innerHTML='';att.forEach(function(a,i){var c=el('span','aichip',a.name+' \u00d7');c.title='Remove';c.onclick=function(){att.splice(i,1);drawChips()};chips.appendChild(c)})}
-  d.querySelector('.aiattach').onclick=function(){fi.click()};
-  fi.onchange=function(){
-    var list=[].slice.call(fi.files);fi.value='';
-    list.reduce(function(p,f){return p.then(function(){
-      if(att.length>=5){add('a','You can attach up to 5 files at once.');return}
-      return readAny(f).then(function(a){att.push(a);drawChips();add('a','Attached '+a.name+'. Ask me anything about it.')}).catch(function(e){add('a',e.message)});
-    })},Promise.resolve());
-  };
-  form.onsubmit=function(e){
-    e.preventDefault();
-    var text=inp.value.trim();
-    if(!text||send.disabled)return;
-    
-    inp.value='';add('m',text);hist.push({role:'user',content:text});
-    send.disabled=true;typing(true);
-    fetch(AI_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:hist.slice(-16),files:att})})
-      .then(function(r){return r.json().catch(function(){return{}}).then(function(j){
-        if(!r.ok||j.error)throw new Error(j.error||('Server error '+r.status));
-        return j;
-      })})
-      .then(function(j){
-        typing(false);var t=(j.reply||'').trim();
-        add('a',t||'...');hist.push({role:'assistant',content:t});
-        send.disabled=false;inp.focus();
-      })
-      .catch(function(err){typing(false);add('a','Hmm, I could not reach the AI: '+err.message);send.disabled=false});
-  };
-  setTimeout(function(){inp.focus()},60);
 }
 
 /* ---- cloak / accent / panic ---- */
@@ -421,11 +331,134 @@ function renderPrefs(){
   drawLinks();
 }
 
+/* ---- Unblocker: route comes from Supabase (RLS-protected table), never hardcoded in this page ---- */
+var SB_URL='https://nzctnrhudojfsilcorio.supabase.co',SB_KEY='sb_publishable_dFT6Lo33GndLvVrrYSKDNA_nPZ1Owol';
+var PROXY_BASE=null,USE_CORS_PROXY=false,unbOn=false,unbBusy=false;
+function proxyUrl(url){
+  if(!USE_CORS_PROXY||!PROXY_BASE)return url;
+  if(!url||url.indexOf(PROXY_BASE)===0||/^(data:|blob:|javascript:|about:|#)/i.test(url))return url;
+  return PROXY_BASE+'/'+url;
+}
+function getRoute(){
+  if(PROXY_BASE)return Promise.resolve(PROXY_BASE);
+  return fetch(SB_URL+'/rest/v1/app_config?key=eq.unblocker_route&select=value',{headers:{apikey:SB_KEY,Accept:'application/json'}})
+    .then(function(r){if(!r.ok)throw new Error('config '+r.status);return r.json()})
+    .then(function(rows){
+      var v=rows&&rows[0]&&rows[0].value;
+      if(!v||!/^https:\/\//i.test(v))throw new Error('no route configured');
+      PROXY_BASE=v.replace(/\/+$/,'');return PROXY_BASE;
+    });
+}
+function reroute(){
+  tabs.forEach(function(t){
+    var f=$(t.id);if(!f||!t.url)return;
+    var want=proxyUrl(t.url);
+    if(f.getAttribute('src')!==want)f.src=want;
+  });
+}
+var toastT=0;
+function toast(m){var t=$('toast');t.textContent=m;t.classList.add('on');clearTimeout(toastT);toastT=setTimeout(function(){t.classList.remove('on')},3800)}
+
+/* decorative routing logs for the intro animation */
+var UH=['fra-02','ams-11','lhr-07','iad-03','sin-05','nrt-09','syd-02','gru-04','ord-12','cdg-06','yyz-08','hkg-01'];
+var UP=['index.html','assets/app.js','api/session','static/main.css','video/seg_0042.ts','img/hero.webp','socket','manifest.json'];
+function upick(a){return a[Math.floor(Math.random()*a.length)]}
+function uint(a,b){return a+Math.floor(Math.random()*(b-a+1))}
+function uhex(n){var s='';while(n--)s+=Math.floor(Math.random()*16).toString(16);return s}
+function uip(){return uint(23,223)+'.'+uint(0,255)+'.'+uint(0,255)+'.'+uint(1,254)}
+function ulog(){
+  var d=new Date(),pd=function(n,l){return String(n).padStart(l||2,'0')};
+  var st='['+pd(d.getSeconds())+'.'+pd(d.getMilliseconds(),3)+'] ',h1=upick(UH),h2=upick(UH);
+  switch(Math.floor(Math.random()*10)){
+    case 0:return st+'ROUTE  switching edge '+h1+' -> '+h2;
+    case 1:return st+'ROUTE  rerouting via '+h1+' (rtt '+uint(9,140)+'ms)';
+    case 2:return st+'TUNNEL handshake ok '+uint(12,90)+'ms';
+    case 3:return st+'REQ    GET /'+upick(UP)+' 200 '+uint(8,70)+'ms';
+    case 4:return st+'DNS    resolve host -> '+uip();
+    case 5:return st+'PROXY  rotating exit node '+uint(1,64)+' -> '+uint(1,64);
+    case 6:return st+'REWRITE stripped frame + csp headers';
+    case 7:return st+'TLS    session resumed '+uhex(10);
+    case 8:return st+'CACHE  hit '+uhex(6)+' ('+uint(1,900)+' kb)';
+    default:return st+'SYNC   upstream '+uip()+':443 alive';
+  }
+}
+
+/* logs spiral into a black hole that grows as it eats them; then "Astra / Unblocker" appears under it */
+function playUnb(){
+  var ov=$('unb'),cv=$('unbc'),c2=cv.getContext('2d'),wrap=$('unbh'),txt=$('unbt');
+  var dpr=Math.min(devicePixelRatio||1,2),W=innerWidth,H=innerHeight,TAUu=Math.PI*2;
+  cv.width=Math.round(W*dpr);cv.height=Math.round(H*dpr);c2.setTransform(dpr,0,0,dpr,0,0);
+  var CXp=W/2,CYp=H*.42,R0=Math.hypot(W,H)*.56;
+  var target=Math.max(110,Math.min(W*.34,H*.3,300)),smin=.05,smax=target/120;
+  txt.style.top=(CYp+target/2+34)+'px';txt.classList.remove('on');
+  wrap.style.transform='scale('+smin+')';wrap.style.opacity=0;
+  ov.style.display='block';void ov.offsetWidth;ov.classList.add('on');
+  var lines=[],absorbed=0,t=0,prev=0,sm=0,shown=false,stop=false,acc=0,raf=0,rdy;
+  var ready=new Promise(function(r){rdy=r});
+  function spawn(init){
+    lines.push({t:ulog(),r:init?R0*(.25+Math.random()*.7):R0*(.96+Math.random()*.08),th:Math.random()*TAUu,
+      sp:.8+Math.random()*.5,fs:10+Math.random()*5,a:.45+Math.random()*.5,age:0});
+  }
+  for(var k=0;k<22;k++)spawn(true);
+  function frame(ts){
+    if(stop)return;
+    raf=requestAnimationFrame(frame);
+    var dt=prev?Math.min(.05,(ts-prev)/1000):.016;prev=ts;t+=dt;
+    var prog=Math.min(1,Math.max(absorbed/45,t/5));
+    sm+=(prog-sm)*Math.min(1,dt*3.2);
+    var e=sm*sm*(3-2*sm),sc=smin+(smax-smin)*e,core=60*sc;
+    wrap.style.transform='scale('+sc.toFixed(3)+')';
+    wrap.style.opacity=Math.min(1,t/.9);
+    c2.clearRect(0,0,W,H);
+    acc+=dt*(10+14*sm);
+    while(acc>=1){acc-=1;if(lines.length<70)spawn(false)}
+    c2.textAlign='center';c2.textBaseline='middle';
+    for(var i=lines.length-1;i>=0;i--){
+      var L=lines[i],q=Math.max(0,1-L.r/R0);
+      L.r-=(110+1150*q*q)*dt*L.sp;L.th+=(.28+2.2*q*q)*dt;L.age+=dt;
+      if(L.r<Math.max(core*.92,6)){lines.splice(i,1);absorbed++;continue}
+      var cs=Math.cos(L.th),sn=Math.sin(L.th),x=CXp+L.r*cs,y=CYp+L.r*sn*.8;
+      var ang=Math.atan2(cs*.8,-sn);if(Math.cos(ang)<0)ang+=Math.PI;
+      var s2=Math.max(.12,Math.min(1,(L.r-core)/(core*2.5+90)));
+      var a=L.a*Math.min(1,(L.r-core)/(core*.9+30))*Math.min(1,L.age*1.5);
+      if(a<=.01)continue;
+      c2.save();c2.translate(x,y);c2.rotate(ang);c2.scale(1+(1-s2)*1.6,s2);
+      c2.globalAlpha=a;c2.fillStyle=L.t.indexOf('ROUTE')>-1?'#fff':'#bfc0c8';
+      c2.font=L.fs+'px ui-monospace,Menlo,Consolas,monospace';c2.fillText(L.t,0,0);c2.restore();
+    }
+    if(!shown&&sm>.985&&t>2.5){shown=true;txt.classList.add('on');setTimeout(rdy,1900)}
+  }
+  raf=requestAnimationFrame(frame);
+  function end(){
+    if(stop)return;stop=true;cancelAnimationFrame(raf);
+    ov.classList.remove('on');txt.classList.remove('on');
+    setTimeout(function(){if(!ov.classList.contains('on'))ov.style.display='none'},900);
+  }
+  return {ready:ready,end:end};
+}
+function setUnbSwitch(v){$('swUnb').classList.toggle('on',v)}
+function toggleUnb(){
+  if(unbBusy)return;
+  if(unbOn){
+    unbOn=false;USE_CORS_PROXY=false;setUnbSwitch(false);reroute();toast('Unblocker off');return;
+  }
+  unbBusy=true;setUnbSwitch(true);setMenu(false);
+  var anim=playUnb();
+  var route=getRoute().then(function(){USE_CORS_PROXY=true;reroute()});
+  Promise.all([route,anim.ready]).then(function(){
+    unbOn=true;unbBusy=false;anim.end();
+  }).catch(function(e){
+    anim.end();unbOn=false;USE_CORS_PROXY=false;unbBusy=false;setUnbSwitch(false);
+    toast('Unblocker could not start ('+e.message+')');
+  });
+}
+
 /* ---- events ---- */
 orb.onclick=function(){setMenu(!menu.classList.contains('open'))};
 scrim.onclick=function(){setMenu(false)};
 $('newTab').onclick=function(){addTab()};
 $('swFix').onclick=toggleFix;
+$('swUnb').onclick=toggleUnb;
 $('kill').onclick=function(){window.close()};
 addr.addEventListener('keydown',function(e){if(e.key==='Enter')addTab()});
 document.addEventListener('keydown',function(e){
@@ -433,7 +466,7 @@ document.addEventListener('keydown',function(e){
   if(prefs.panic&&e.key==='`'){e.preventDefault();$('panic').classList.toggle('on')}
 });
 
-/* ---- Files: Supabase (if SB_KEY set) or IndexedDB on this device ---- */
+/* ---- Files: stored in IndexedDB on this device ---- */
 var MAXMB=50;
 function fmt(n){var u=['B','KB','MB','GB'],i=0;while(n>=1024&&i<3){n/=1024;i++}return (i?n.toFixed(1):n)+' '+u[i]}
 var idb=null;
