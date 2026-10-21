@@ -481,9 +481,14 @@ function openOverview(){
 function closeOverview(){
   for(var i=tabs.length-1;i>=0;i--)if(tabs[i].kind==='ov')closeTab({stopPropagation:function(){}},i);
 }
-function loadOverview(t){
+var lastOv=null;
+function loadOverview(t,instant){
   var d=$(t.id);if(!d)return;
-  arpc('admin_overview').then(function(o){return ovOpen?arpc('admin_visitor',{vid:ovOpen}).then(function(p){return[o,p]},function(){ovOpen=null;return[o,null]}):[o,null]}).then(function(a){drawOverview(d,a[0],a[1])}).catch(function(e){
+  if(instant&&lastOv)drawOverview(d,lastOv,null);
+  Promise.all([
+    arpc('admin_overview'),
+    ovOpen?arpc('admin_visitor',{vid:ovOpen}).catch(function(){ovOpen=null;return null}):Promise.resolve(null)
+  ]).then(function(a){lastOv=a[0];drawOverview(d,a[0],a[1])}).catch(function(e){
     if(e.code==='42501'||e.status===403){saveTok(null);toast('Admin session expired. Enter your key again.');setAdm('out');return}
     if(!d.firstChild||d.querySelector('.err'))drawOverviewError(d,'Could not load overview: '+e.message);
   });
@@ -554,11 +559,11 @@ function drawOverview(d,o,prof){
     var tr=el('tr');
     var open=r.uid===ovOpen,c1=el('td'),ar=el('button','x',open?'\u25be':'\u25b8'),dot=el('span','dot '+(r.online?'on':'off'));
     ar.setAttribute('aria-label','Toggle details');dot.title=r.online?'Online':'Offline';
-    ar.onclick=function(){ovOpen=open?null:r.uid;var t=ovTab();if(t)loadOverview(t)};
+    ar.onclick=function(){ovOpen=open?null:r.uid;var t=ovTab();if(t)loadOverview(t,true)};
     c1.append(ar,dot,r.id);tr.appendChild(c1);
     [r.nickname||'-',fdate(r.first_seen),fdate(r.last_seen),r.mins,r.tabs].forEach(function(x){tr.appendChild(el('td','',String(x)))});
     tb.appendChild(tr);
-    if(open&&prof){var dr=el('tr'),dc=el('td');dc.colSpan=6;dc.style.whiteSpace='normal';dc.appendChild(drawDetail(prof));dr.appendChild(dc);tb.appendChild(dr)}
+    if(open){var dr=el('tr'),dc=el('td');dc.colSpan=6;dc.style.whiteSpace='normal';dc.appendChild(prof?drawDetail(prof):el('div','sub','Loading...'));dr.appendChild(dc);tb.appendChild(dr)}
   });
   sc.appendChild(tb);rb.appendChild(sc);w.appendChild(rb);
   d.appendChild(w);d.scrollTop=top;
