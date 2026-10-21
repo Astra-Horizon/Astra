@@ -463,13 +463,51 @@ function renderAdmin(){
   if(adm==='ok'){
     var w=el('div','adm-who'),s=el('span','','Admin unlocked');
     var o=el('button','pill','Sign out');o.style.height='30px';o.onclick=logout;
-    w.append(s,o);b.append(w,msg);return;
+    w.append(s,o);b.append(w,msg);
+    b.appendChild(el('div','h','Admin Keys'));
+    var kb=el('div','sec');kb.id='keybox';kb.appendChild(el('div','none','Loading...'));b.appendChild(kb);
+    loadKeys();
+    return;
   }
   var ky=el('input','inp'),go=el('button','pill wide','Admin login');
   ky.type='password';ky.placeholder='Admin key';ky.autocomplete='off';ky.setAttribute('aria-label','Admin key');
   go.onclick=function(){login(ky.value)};
   ky.addEventListener('keydown',function(e){if(e.key==='Enter')go.onclick()});
   b.append(ky,go,msg);
+}
+function loadKeys(){
+  arpc('admin_list_keys',{}).then(renderKeys).catch(function(e){
+    var kb=$('keybox');if(kb)kb.innerHTML='';if(kb)kb.appendChild(el('div','adm-msg bad',e.message));
+  });
+}
+function renderKeys(list){
+  var kb=$('keybox');if(!kb)return;kb.innerHTML='';
+  list.forEach(function(k){
+    var row=el('div','lrow'),cp=el('button','x','\u2398'),rv=el('button','x','\u00d7');
+    cp.title='Copy key';rv.title='Revoke key';
+    row.appendChild(el('span','',k.label+'  \u00b7  '+k.key));
+    cp.onclick=function(){
+      if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(k.key).then(function(){toast('Copied')}).catch(function(){toast(k.key)});
+      else toast(k.key);
+    };
+    rv.onclick=function(){
+      if(list.length<=1){toast('Cannot remove the last remaining key');return}
+      if(!confirm('Revoke "'+k.label+'"? Anyone using it will be signed out.'))return;
+      arpc('admin_revoke_key',{key_id:k.id}).then(function(){toast('Key revoked');loadKeys()}).catch(function(e){toast(e.message)});
+    };
+    row.append(cp,rv);kb.appendChild(row);
+  });
+  var two=el('div','two'),nm=el('input','inp'),ky=el('input','inp'),add=el('button','pill wide','+ Add Key');
+  nm.placeholder='Label (e.g. "Alex")';nm.maxLength=24;nm.setAttribute('aria-label','New key label');
+  ky.placeholder='Leave blank to generate';ky.setAttribute('aria-label','New key value');
+  two.append(nm,ky);
+  add.onclick=function(){
+    arpc('admin_add_key',{label:nm.value.trim(),key:ky.value.trim()||null}).then(function(r){
+      nm.value='';ky.value='';loadKeys();
+      alert('New key for "'+r.label+'":\n\n'+r.key+'\n\nShown once \u2014 copy it now.');
+    }).catch(function(e){toast(e.message)});
+  };
+  kb.append(two,add);
 }
 
 /* ---- Overview (opens as a tab, like CloudMoon) ---- */
