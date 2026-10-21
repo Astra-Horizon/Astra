@@ -16,7 +16,7 @@ input{-webkit-user-select:text;user-select:text}
 @keyframes shimmer{0%,100%{opacity:.8}50%{opacity:1}}
 @keyframes breathe{to{box-shadow:0 0 calc(var(--h)*.55) calc(var(--h)*.05) rgba(255,255,255,.5),0 0 calc(var(--h)*.05) 1px rgba(255,255,255,.6)}}
 @keyframes halo{from{opacity:.7;transform:scale(.95)}to{opacity:1;transform:scale(1.14)}}
-/* CSS black hole: used for the small logos and as a fallback if WebGL is unavailable */
+/* CSS black hole */
 .bh{position:absolute;left:50%;top:50%;width:0;height:0;transform:rotate(-18deg);pointer-events:none}
 .bh>*{position:absolute;left:50%;top:50%;border-radius:50%}
 .halo{width:calc(var(--h)*5.6);height:calc(var(--h)*2.3);margin:calc(var(--h)*-1.15) 0 0 calc(var(--h)*-2.8);background:radial-gradient(closest-side,rgba(255,255,255,.12),transparent);filter:blur(12px);animation:halo 7s ease-in-out infinite alternate}
@@ -54,6 +54,12 @@ button:focus-visible,input:focus-visible{outline:2px solid #fff;outline-offset:2
 #welcome h1{position:relative;font-family:var(--head);margin:0 0 .6rem;font-size:clamp(2.2rem,6vw,3.6rem);font-weight:800;letter-spacing:-.04em;line-height:1.05;background:linear-gradient(180deg,#fff 5%,#b9b9c3 95%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 0 28px rgba(255,255,255,.55))}
 #welcome p{position:relative;margin:0 auto;max-width:460px;color:var(--dim);line-height:1.55;font-size:1.02rem}
 
+/* live user count */
+.live{display:inline-flex;align-items:center;gap:7px;height:26px;padding:0 11px;border-radius:999px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.07);color:var(--text);font-size:12px;font-weight:600;white-space:nowrap}
+.live i{width:7px;height:7px;border-radius:50%;background:#7dffa8;box-shadow:0 0 8px #7dffa8;animation:shimmer 2s ease-in-out infinite}
+#welcome .live{position:relative;margin-top:18px}
+.mh .live{margin-left:auto;font-family:var(--body)}
+
 #orb{position:fixed;top:14px;right:14px;width:50px;height:50px;border-radius:16px;border:2px solid #fff;cursor:pointer;z-index:70;padding:0;opacity:.95;background:#000;box-shadow:0 0 18px rgba(255,255,255,.55);display:flex;align-items:center;justify-content:center;gap:4px;transition:opacity .2s,transform .25s;animation:glowp 3.5s ease-in-out infinite alternate}
 #orb b{width:5px;height:5px;border-radius:50%;background:#fff}
 @keyframes glowp{to{box-shadow:0 0 28px rgba(255,255,255,.9)}}
@@ -73,6 +79,7 @@ button:focus-visible,input:focus-visible{outline:2px solid #fff;outline-offset:2
 .pill{height:38px;border:0;border-radius:12px;padding:0 14px;font-weight:600;color:#000;cursor:pointer;background:linear-gradient(120deg,var(--violet),var(--fuchsia))}
 .pill:hover{filter:brightness(1.15)}
 .pill.wide{width:100%}
+.pill.ghost{background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.22)}
 .h{color:var(--dim);font-weight:600;font-size:12px;margin:16px 2px 8px}
 .qgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .t{display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 4px 8px;border:1px solid rgba(255,255,255,.16);border-radius:14px;background:rgba(255,255,255,.06);color:var(--text);font-size:12px;font-weight:600;cursor:pointer;transition:transform .2s,background .2s}
@@ -100,76 +107,62 @@ button:focus-visible,input:focus-visible{outline:2px solid #fff;outline-offset:2
 .chip{height:30px;padding:0 12px;border-radius:999px;border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.07);color:var(--text);font-weight:600;font-size:12px;cursor:pointer}
 .chip:hover{background:rgba(255,255,255,.18)}
 .chip.on{background:#fff;border-color:#fff;color:#000}
-.swatch{width:28px;height:28px;border-radius:50%;border:2px solid rgba(255,255,255,.3);cursor:pointer;padding:0}
-.swatch.on{border-color:#fff;box-shadow:0 0 0 2px #000,0 0 0 4px #fff}
 .lrow{display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:10px;background:rgba(255,255,255,.05);font-size:12px}
 .lrow span{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-#panic{position:fixed;inset:0;z-index:9999;background:#fff;display:none}
-#panic.on{display:block}
 #menu{width:min(380px,calc(100vw - 28px));padding:18px;border-radius:26px;background:linear-gradient(180deg,rgba(24,24,28,.96),rgba(8,8,10,.97))}
 .h{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;font-weight:800;margin:20px 2px 9px}
 .h span{letter-spacing:.04em;text-transform:none;font-weight:600;opacity:.7}
 .t{border-radius:16px;padding:12px 4px 10px}
 .pill{font-weight:800}.kill{border-radius:14px}
-#drop{display:flex;flex-direction:column;align-items:center;gap:3px;padding:20px 12px;border:1.5px dashed rgba(255,255,255,.3);border-radius:16px;background:rgba(255,255,255,.04);cursor:pointer;text-align:center;transition:all .2s}
-#drop:hover,#drop.over{border-color:#fff;background:rgba(255,255,255,.12);transform:translateY(-1px)}
-#drop b{font-size:13px}#drop small{color:var(--dim);font-size:11.5px}
-#fstat{min-height:16px;margin:8px 2px 0;font-size:12px;color:var(--dim)}#fstat.bad{color:#ff7b8a}
-#flist{display:flex;flex-direction:column;gap:6px;margin-top:6px;max-height:220px;overflow:auto;scrollbar-width:thin}
-.frow{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:14px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);transition:background .2s}
-.frow:hover{background:rgba(255,255,255,.12)}
-.fi{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:#fff;color:#000;font-size:9px;font-weight:800;flex:none}
-.fm{flex:1;min-width:0}.fn{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600;font-size:12.5px}.fm small{color:var(--dim);font-size:11px}
-#unb{position:fixed;inset:0;z-index:9990;background:#000;opacity:0;visibility:hidden;display:none;transition:opacity .8s,visibility .8s;overflow:hidden}
-#unb.on{opacity:1;visibility:visible;transition:opacity .3s,visibility 0s}
-#unbs{position:absolute;inset:0}
-#unbs.shake{animation:ushake .5s linear}
-@keyframes ushake{0%,100%{transform:translate(0)}10%{transform:translate(-6px,3px)}20%{transform:translate(5px,-4px)}30%{transform:translate(-4px,-2px)}40%{transform:translate(6px,3px)}50%{transform:translate(-5px,4px)}60%{transform:translate(4px,-3px)}70%{transform:translate(-3px,2px)}80%{transform:translate(2px,-2px)}90%{transform:translate(-1px,1px)}}
-#unbterm{position:absolute;top:22px;left:24px;right:24px;font:13px/1.55 ui-monospace,Menlo,Consolas,monospace;color:#d6d6dc;text-shadow:0 0 8px rgba(255,255,255,.2);white-space:pre-wrap;transition:opacity .6s}
-@media(min-width:700px){#unbterm{font-size:15px}}
-@media(max-height:620px){#unbterm{font-size:11px;line-height:1.4}}
-
-.tl .dm{color:#6f6f7a}
-.tl .sp{color:#9b9ba5}
-.tl .okt{color:#fff;font-weight:800;text-shadow:0 0 10px rgba(255,255,255,.65)}
-.tl .wt{color:#ffd166;font-weight:800}
-.tl .pr{color:#fff;font-weight:800}
-#unb::after{content:"";position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(255,255,255,.035) 0 1px,transparent 1px 3px)}
-#unbterm.out{opacity:0}
-.tl{min-height:1.55em}
-.tl.p{color:#fff}
-.tl.dim{color:#9b9ba5}
-.tl.ok{color:#fff;font-weight:800;text-shadow:0 0 12px rgba(255,255,255,.7)}
-.tl.err{color:#ff5c6e;font-weight:800;font-size:1.25em;text-shadow:0 0 14px rgba(255,92,110,.7);animation:uerr .1s steps(2) 6}
-@keyframes uerr{0%{transform:translateX(0)}50%{transform:translateX(3px)}100%{transform:translateX(-3px)}}
-.cur{display:inline-block;width:.6em;height:1.1em;margin-left:2px;vertical-align:-.18em;background:#fff;animation:ublink .9s steps(1) infinite}
-@keyframes ublink{50%{opacity:0}}
-#unbcrack{position:absolute;inset:0;width:100%;height:100%;transition:opacity 1s}
-#unbcrack.dim{opacity:.22}
-#unbcrack .k{fill:none;stroke:#fff;stroke-width:var(--w);stroke-linejoin:round;stroke-linecap:round;opacity:var(--o);stroke-dasharray:1;stroke-dashoffset:1;visibility:hidden}
-#unbcrack.on .k{visibility:visible;animation:ucrack .5s cubic-bezier(.2,.8,.2,1) var(--d) forwards}
-@keyframes ucrack{to{stroke-dashoffset:0}}
-#unbflash{position:absolute;inset:0;pointer-events:none;opacity:0;background:radial-gradient(circle at 50% 36%,rgba(255,255,255,.55),rgba(255,255,255,0) 55%)}
-#unbflash.go{animation:uflash .5s ease-out}
-@keyframes uflash{0%{opacity:1}100%{opacity:0}}
-#unbhole{position:absolute;left:50%;top:36%;width:0;height:0;transform:scale(.02);opacity:0;will-change:transform}
-#unbhole.on{opacity:1;transform:scale(1);transition:transform 1.3s cubic-bezier(.6,.02,.25,1),opacity .25s}
-#unbhole .dsk{position:absolute;left:calc(var(--R)*-3.4);top:calc(var(--R)*-3.4);width:calc(var(--R)*6.8);height:calc(var(--R)*6.8);border-radius:50%;background:radial-gradient(closest-side,transparent 0 24%,rgba(255,255,255,.95) 28%,rgba(255,255,255,.5) 38%,rgba(255,255,255,.14) 62%,transparent 100%);transform:rotate(-18deg) scaleY(.16);animation:udp 3.2s ease-in-out infinite alternate}
-@keyframes udp{to{opacity:.7}}
-#unbhole .core{position:absolute;left:calc(var(--R)*-1);top:calc(var(--R)*-1);width:calc(var(--R)*2);height:calc(var(--R)*2);border-radius:50%;background:#000;box-shadow:0 0 0 2px #fff,0 0 calc(var(--R)*.5) calc(var(--R)*.05) rgba(255,255,255,.5),0 0 calc(var(--R)*1.5) calc(var(--R)*.1) rgba(255,255,255,.14)}
-#unbt{position:absolute;left:0;right:0;text-align:center;pointer-events:none}
-#unbt .ua{font-family:var(--head);font-weight:800;font-size:clamp(2.4rem,9vw,4.6rem);letter-spacing:-.03em;line-height:1.05;background:linear-gradient(180deg,#fff 5%,#b9b9c3 95%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;filter:drop-shadow(0 0 28px rgba(255,255,255,.55));opacity:0;transform:translateY(12px);transition:opacity .9s,transform .9s}
-#unbt .ub{margin-top:.55rem;display:flex;align-items:center;justify-content:center;gap:.7em;font-weight:800;font-size:clamp(.78rem,2.6vw,1.05rem);letter-spacing:.42em;text-transform:uppercase;color:var(--dim);opacity:0;transform:translateY(8px);transition:opacity .9s .55s,transform .9s .55s}
-#unbt .ni{width:1.35em;height:1.35em;flex:none;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;filter:drop-shadow(0 0 6px rgba(255,255,255,.6))}
-#unbt.on .ua,#unbt.on .ub{opacity:1;transform:none}
-@media(prefers-reduced-motion:reduce){#unbs.shake,#unbflash.go,.tl.err{animation:none}}
 #toast{position:fixed;left:50%;bottom:22px;z-index:9995;transform:translate(-50%,12px);max-width:min(440px,90vw);padding:10px 16px;border-radius:14px;background:rgba(20,20,24,.95);border:1px solid rgba(255,255,255,.22);color:#fff;font-size:13px;font-weight:600;text-align:center;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s}
 #toast.on{opacity:1;transform:translate(-50%,0)}
-#warn{position:fixed;top:14px;left:14px;right:80px;max-width:520px;z-index:55;display:none;padding:12px 14px;border-radius:16px;background:rgba(20,20,24,.96);border:1px solid rgba(255,92,110,.45);box-shadow:0 14px 40px rgba(0,0,0,.6);font-size:13px;line-height:1.45}
-#warn.on{display:block}
-#warn .wb{display:flex;gap:8px;margin-top:10px}
-.wbt{height:30px;padding:0 12px;border-radius:999px;border:0;background:#fff;color:#000;font-weight:800;font-size:12px;cursor:pointer}
-.wbt.g{background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.22)}
+
+/* admin panel in menu */
+#admin .adm-who{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 10px;border-radius:14px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);font-size:12.5px;font-weight:600}
+#admin .adm-who span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#admin .adm-msg{min-height:16px;font-size:12px;color:var(--dim)}
+#admin .adm-msg.bad{color:#ff7b8a}
+
+/* overview tab */
+#view .ov{position:absolute;inset:0;overflow:auto;display:none;background:#050505;padding:78px 22px 32px;scrollbar-width:thin}
+#view .ov.on{display:block}
+.ov .wrap{max-width:900px;margin:0 auto}
+.ov h2{font-family:var(--head);font-size:clamp(1.4rem,4vw,2.1rem);letter-spacing:-.03em;margin:0 0 4px;font-weight:800}
+.ov .sub{display:flex;align-items:center;gap:10px;color:var(--dim);font-size:12.5px;margin-bottom:18px}
+.ov .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(135px,1fr));gap:10px}
+.ov .card{border:1px solid rgba(255,255,255,.16);border-radius:16px;background:rgba(255,255,255,.05);padding:14px}
+.ov .card b{display:block;font-family:var(--head);font-size:1.6rem;letter-spacing:-.03em}
+.ov .card small{color:var(--dim);font-size:12px}
+.ov .card.hot{border-color:#7dffa8;box-shadow:0 0 22px rgba(125,255,168,.15)}
+.ov .box{margin-top:14px;border:1px solid rgba(255,255,255,.16);border-radius:16px;background:rgba(255,255,255,.04);padding:14px}
+.ov .box h3{margin:0 0 12px;font-size:13px;font-weight:800}
+.ov .bars{display:flex;align-items:flex-end;gap:3px;height:120px}
+.ov .bars div{flex:1;display:flex;flex-direction:column;justify-content:flex-end;height:100%}
+.ov .bars i{display:block;background:#fff;border-radius:3px 3px 0 0;min-height:2px;opacity:.85}
+.ov .axis{display:flex;justify-content:space-between;color:var(--dim);font-size:11px;margin-top:6px}
+.ov table{width:100%;border-collapse:collapse;font-size:12.5px}
+.ov th{text-align:left;color:var(--dim);font-weight:600;font-size:11.5px;padding:0 8px 8px 0}
+.ov td{padding:7px 8px 7px 0;border-top:1px solid rgba(255,255,255,.08);white-space:nowrap}
+.ov .scroll{overflow-x:auto}
+.ov .err{color:#ff7b8a;font-size:13px}
+.ov .dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:8px;vertical-align:middle;flex:none}
+.ov .dot.on{background:#7dffa8;box-shadow:0 0 6px #7dffa8}
+.ov .dot.off{background:#ff5c6e}
+.ov .site{display:flex;align-items:center;gap:10px;padding:7px 0;border-top:1px solid rgba(255,255,255,.08);font-size:12.5px}
+.ov .site span{width:150px;flex:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ov .site div{flex:1}.ov .site i{display:block;height:6px;border-radius:3px;background:#fff;opacity:.85}
+.ov .site em{font-style:normal;color:var(--dim);min-width:24px;text-align:right}
+.note{margin:-6px 2px 12px;color:var(--dim);font-size:11px;line-height:1.4}
+.dt h3{margin:14px 0 6px;font-size:13px;font-weight:800}.dt .dtrow{display:flex;gap:6px;margin:10px 0}.dt .site em{min-width:70px}.ov td .x{margin-right:6px;vertical-align:middle}
+.ov td .chip{height:24px;padding:0 9px;margin-right:4px}
+#me{display:flex;align-items:center;gap:8px;margin:-4px 2px 12px;font-size:12px;color:var(--dim)}
+#me span{font-family:ui-monospace,Menlo,monospace;color:var(--text);background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.18);border-radius:8px;padding:2px 8px;-webkit-user-select:text;user-select:text}
+#me b{color:var(--text);font-weight:800}
+#msg{position:fixed;inset:0;z-index:9990;display:none;align-items:center;justify-content:center;padding:24px;background:rgba(0,0,0,.6);backdrop-filter:blur(6px)}
+#msg.on{display:flex}
+#msg .bx{max-width:420px;width:100%;padding:22px;border-radius:22px;background:linear-gradient(180deg,rgba(24,24,28,.97),rgba(8,8,10,.98));border:1px solid var(--edge);box-shadow:0 24px 70px rgba(0,0,0,.6);text-align:center}
+#msg .bx small{display:block;color:var(--dim);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;font-weight:800;margin-bottom:10px}
+#msg .bx p{margin:0 0 16px;font-size:15px;line-height:1.5;white-space:pre-wrap;word-break:break-word}
 </style>
 </head>
 <body>
@@ -180,25 +173,18 @@ button:focus-visible,input:focus-visible{outline:2px solid #fff;outline-offset:2
   <div class="mini" aria-hidden="true"><div class="bh"><div class="halo"></div><div class="dk b"></div><div class="ln"></div><div class="ar u"></div><div class="ar l"></div><div class="hl"></div><div class="dk f"></div></div></div>
   <h1>Astra</h1>
   <p>Your session is ready. Open the menu with the button in the top corner to open a tab.</p>
+  <div class="live" title="People using Astra right now"><i></i><span><span class="liveN">-</span> online</span></div>
 </div>
 
 <div id="scrim"></div>
 <button id="orb" aria-label="Open menu" title="Menu"><b></b><b></b><b></b></button>
-<div id="panic"></div>
+<div id="msg" role="alertdialog" aria-live="assertive"><div class="bx"><small>Message from admin</small><p id="msgT"></p><button class="pill wide" id="msgOk">OK</button></div></div>
 <div id="toast" role="status" aria-live="polite"></div>
-<div id="unb" aria-hidden="true">
-  <div id="unbs">
-    <svg id="unbcrack" xmlns="http://www.w3.org/2000/svg"></svg>
-    <div id="unbhole"><div class="dsk"></div><div class="core"></div></div>
-    <div id="unbt"><div class="ua">Astra</div><div class="ub"><svg class="ni" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M5.6 5.6L18.4 18.4"/></svg><span>Unblocker</span></div></div>
-    <div id="unbterm"></div>
-    <div id="unbflash"></div>
-  </div>
-</div>
-<div id="warn" role="alert"><div id="warnmsg"></div><div class="wb"><button class="wbt" id="warnoff">Turn off Unblocker</button><button class="wbt g" id="warnx">Dismiss</button></div></div>
 
 <div id="menu" role="dialog" aria-label="Astra menu">
-  <div class="mh"><div class="mark" aria-hidden="true"><div class="bh"><div class="dk b"></div><div class="ln"></div><div class="ar u"></div><div class="ar l"></div><div class="hl"></div><div class="dk f"></div></div></div>Astra</div>
+  <div class="mh"><div class="mark" aria-hidden="true"><div class="bh"><div class="dk b"></div><div class="ln"></div><div class="ar u"></div><div class="ar l"></div><div class="hl"></div><div class="dk f"></div></div></div>Astra<div class="live" title="People using Astra right now"><i></i><span><span class="liveN">-</span> online</span></div></div>
+  <div id="me"></div>
+  <div class="note">Astra counts visits and logs which sites you open (domain only, never full addresses). The admin can see your open tabs and send you messages.</div>
   <div class="field">
     <input id="addr" type="text" placeholder="destination..." spellcheck="false" autocomplete="off" aria-label="Destination">
     <button class="pill" id="newTab">+ New Tab</button>
@@ -207,14 +193,12 @@ button:focus-visible,input:focus-visible{outline:2px solid #fff;outline-offset:2
   <div class="qgrid" id="quick"></div>
   <div class="h">Open Tabs</div>
   <div id="tablist"></div>
-  <div class="h">Files <span id="fmode"></span></div>
-  <div id="drop" tabindex="0" role="button" aria-label="Upload files"><b>Drop files here</b><small>or click to browse (max 50 MB each)</small><input id="fin" type="file" multiple hidden></div>
-  <div id="fstat" aria-live="polite"></div><div id="flist"></div>
   <div class="h">Settings</div>
   <div id="prefs"></div>
-  <div class="row"><div>Unblocker<small>A little bit glitchy, but makes a lot more sites work</small></div><button class="sw" id="swUnb" aria-label="Unblocker"></button></div>
   <div class="row"><div>CloudMoon Fix<small>Applies a sandbox to all tabs</small></div><button class="sw" id="swFix" aria-label="CloudMoon Fix"></button></div>
   <button class="kill" id="kill">Kill Session</button>
+  <div class="h">Admin</div>
+  <div id="admin" class="sec"></div>
 </div>
 
 <script>
@@ -223,12 +207,10 @@ var view=$('view'),menu=$('menu'),scrim=$('scrim'),orb=$('orb'),addr=$('addr'),l
 var ALLOW='fullscreen; autoplay; clipboard-write; gamepad; microphone; camera; pointer-lock; keyboard-map';
 var COLORS=['#2b2b2b','#3a3a3a','#474747','#555','#333','#444'];
 var QUICK=[['CloudMoon','https://web.cloudmoonapp.com/']];
-var CLOAKS=[['Off','',''],['Google Docs','Untitled document - Google Docs','#4285f4'],['Classroom','Classes','#1e8e3e'],['Google Drive','My Drive - Google Drive','#f9ab00']];
-var ACCENTS=[['#e6e6ec','#ffffff'],['#7cc4ff','#cfe9ff'],['#ffd166','#fff0c2'],['#ff7b9c','#ffd0dc'],['#7dffa8','#d3ffe3']];
-var tabs=[],active=-1,fixEnabled=false;
+var tabs=[],active=-1,fixEnabled=false,tabsOpened=0;
 
 /* ---- preferences ---- */
-var prefs={cloak:0,accent:0,panic:false,links:[]};
+var prefs={links:[]};
 try{Object.assign(prefs,JSON.parse(localStorage.getItem('astra_prefs')||'{}'))}catch(e){}
 function savePrefs(){try{localStorage.setItem('astra_prefs',JSON.stringify(prefs))}catch(e){}}
 function el(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e}
@@ -240,15 +222,18 @@ document.addEventListener('dragstart',function(e){e.preventDefault()});
 (function(){var s=$('stars');for(var i=0;i<60;i++){var d=el('i'),z=Math.random()<.2?3:2;
 d.style.cssText='left:'+Math.random()*100+'%;top:'+Math.random()*100+'%;width:'+z+'px;height:'+z+'px;animation-delay:'+(-Math.random()*4)+'s;animation-duration:'+(3+Math.random()*4)+'s';s.appendChild(d)}})();
 
+var toastT=0;
+function toast(m){var t=$('toast');t.textContent=m;t.classList.add('on');clearTimeout(toastT);toastT=setTimeout(function(){t.classList.remove('on')},3800)}
+
 /* ---- menu ---- */
 function setMenu(o){
   menu.classList.toggle('open',o);scrim.style.display=o?'block':'none';orb.classList.toggle('on',o);
   orb.setAttribute('aria-label',o?'Close menu':'Open menu');
-  if(o)renderTabs();
+  if(o){renderTabs();pollLive();if(admTok&&adm!=='ok')checkAdmin()}
 }
 
 /* ---- tabs ---- */
-function norm(v){v=(v||'').trim();return !v?'':/^(https?:\/\/|blob:)/i.test(v)?v:'https://'+v}
+function norm(v){v=(v||'').trim();return !v?'':/^https?:\/\//i.test(v)?v:'https://'+v}
 function nameOf(u){
   try{var h=new URL(u).hostname.replace(/^www\./,'');return h.indexOf('cloudmoon')>-1?'CloudMoon':h.charAt(0).toUpperCase()+h.slice(1)}
   catch(e){return 'New Tab'}
@@ -267,9 +252,9 @@ function addTab(url,name){
   if(!url)return;
   var id='f'+Date.now()+Math.floor(Math.random()*99),f=el('iframe');
   f.id=id;f.setAttribute('allow',ALLOW);
-  applySandbox(f);f.src=proxyUrl(url);view.appendChild(f);
+  applySandbox(f);f.src=url;view.appendChild(f);
   tabs.push({id:id,name:name||nameOf(url),url:url});
-  watchTab(tabs[tabs.length-1]);
+  tabsOpened++;logTab(url);beat();
   addr.value='';switchTab(tabs.length-1);setMenu(false);
 }
 function switchTab(i){
@@ -277,16 +262,19 @@ function switchTab(i){
   Array.prototype.forEach.call(view.children,function(f){f.classList.toggle('on',!!tabs[i]&&f.id===tabs[i].id)});
   $('welcome').style.display=i<0?'flex':'none';
   renderTabs();
+  if(tabs[i]&&tabs[i].kind==='ov')loadOverview(tabs[i]);
 }
 function closeTab(e,i){
   e.stopPropagation();
+  if(!tabs[i])return;
+  if(tabs[i].timer)clearInterval(tabs[i].timer);
   var f=$(tabs[i].id);if(f)f.remove();
   tabs.splice(i,1);
   if(!tabs.length)switchTab(-1);
   else switchTab(Math.max(0,Math.min(active>=i?active-1:active,tabs.length-1)));
 }
 function renderTabs(){
-  list.innerHTML='';
+  list.innerHTML='';syncTabs();
   if(!tabs.length){list.appendChild(el('div','none','No tabs open.'));return}
   tabs.forEach(function(t,i){
     var r=el('div','trow'+(i===active?' on':'')),x=el('button','x','\u00d7');
@@ -302,57 +290,24 @@ function renderQuick(){
     var b=el('button','t');b.append(avatar(l[0]),l[0]);
     b.onclick=function(){addTab(l[1])};q.appendChild(b);
   });
+  if(adm==='ok'){
+    var o=el('button','t');o.append(avatar('Overview'),'Overview');
+    o.onclick=openOverview;q.appendChild(o);
+  }
 }
 function toggleFix(){
   fixEnabled=!fixEnabled;
   $('swFix').classList.toggle('on',fixEnabled);
   tabs.forEach(function(t){
+    if(t.kind==='ov')return;
     var f=$(t.id),src=f.src;applySandbox(f);f.src='about:blank';
     setTimeout(function(){f.src=src},50);
   });
 }
 
-/* ---- cloak / accent / panic ---- */
-var iconEl=document.querySelector('link[rel~=icon]'),origTitle=document.title,origIcon=iconEl.href;
-function applyCloak(){
-  var c=CLOAKS[prefs.cloak]||CLOAKS[0];
-  if(!c[1]){document.title=origTitle;iconEl.href=origIcon;return}
-  document.title=c[1];
-  iconEl.href='data:image/svg+xml,'+encodeURIComponent("<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='"+c[2]+"'/><rect x='9' y='7' width='14' height='18' rx='2' fill='#fff'/></svg>");
-}
-function applyAccent(){
-  var a=ACCENTS[prefs.accent]||ACCENTS[0],s=document.documentElement.style;
-  s.setProperty('--violet',a[0]);s.setProperty('--fuchsia',a[1]);
-}
-function pick(group,i){Array.prototype.forEach.call(group.children,function(c,j){c.classList.toggle('on',j===i)})}
-function switchRow(title,sub,on,cb){
-  var r=el('div','row'),d=el('div',null,title),s=el('button','sw'+(on?' on':''));
-  d.appendChild(el('small','',sub));s.setAttribute('aria-label',title);
-  s.onclick=function(){var v=!s.classList.contains('on');s.classList.toggle('on',v);cb(v)};
-  r.append(d,s);return r;
-}
+/* ---- preferences UI ---- */
 function renderPrefs(){
   var box=$('prefs');box.innerHTML='';
-
-  box.appendChild(el('div','h','Tab Cloak'));
-  var cw=el('div','chips');
-  CLOAKS.forEach(function(c,i){
-    var b=el('button','chip'+(i===prefs.cloak?' on':''),c[0]);
-    b.onclick=function(){pick(cw,i);prefs.cloak=i;savePrefs();applyCloak()};cw.appendChild(b);
-  });
-  box.appendChild(cw);
-
-  box.appendChild(el('div','h','Accent Color'));
-  var aw=el('div','chips');
-  ACCENTS.forEach(function(c,i){
-    var b=el('button','swatch'+(i===prefs.accent?' on':''));
-    b.style.background=c[0];b.setAttribute('aria-label','Accent '+(i+1));
-    b.onclick=function(){pick(aw,i);prefs.accent=i;savePrefs();applyAccent()};aw.appendChild(b);
-  });
-  box.appendChild(aw);
-
-  box.appendChild(el('div','h','Panic Key'));
-  box.appendChild(switchRow('Panic key','Press ` to hide Astra instantly (press again to show)',prefs.panic,function(v){prefs.panic=v;savePrefs()}));
 
   box.appendChild(el('div','h','Custom Quick Links'));
   var two=el('div','two'),nm=el('input','inp'),ur=el('input','inp'),add=el('button','pill wide','Add Link'),lbox=el('div','sec'),rows=el('div','sec');
@@ -377,190 +332,236 @@ function renderPrefs(){
   drawLinks();
 }
 
-/* ---- Unblocker: route comes from Supabase (RLS-protected table), never hardcoded in this page ---- */
-var SB_URL='https://nzctnrhudojfsilcorio.supabase.co',SB_KEY='sb_publishable_dFT6Lo33GndLvVrrYSKDNA_nPZ1Owol';
-var PROXY_BASE=null,USE_CORS_PROXY=false,unbOn=false,unbBusy=false;
-function proxyUrl(url){
-  if(!USE_CORS_PROXY||!PROXY_BASE)return url;
-  if(!url||typeof url!=='string')return url;
-  if(url.indexOf(PROXY_BASE)===0)return url;
-  if(/^(data:|blob:|javascript:|mailto:|tel:|about:|#)/i.test(url))return url;
-  return PROXY_BASE+'/'+url;
-}
-function getRoute(){
-  if(PROXY_BASE)return Promise.resolve(PROXY_BASE);
-  return fetch(SB_URL+'/rest/v1/app_config?key=eq.unblocker_route&select=value',{headers:{apikey:SB_KEY,Accept:'application/json'}})
-    .then(function(r){if(!r.ok)throw new Error('config '+r.status);return r.json()})
-    .then(function(rows){
-      var v=rows&&rows[0]&&rows[0].value;
-      if(!v||!/^https:\/\//i.test(v))throw new Error('no route configured');
-      PROXY_BASE=v.replace(/\/+$/,'');return PROXY_BASE;
-    });
-}
-function reroute(){
-  tabs.forEach(function(t){
-    var f=$(t.id);if(!f||!t.url)return;
-    var want=proxyUrl(t.url);
-    if(f.getAttribute('src')!==want){f.src=want;if(want!==t.url)watchTab(t)}
-  });
-}
-var toastT=0;
-function toast(m){var t=$('toast');t.textContent=m;t.classList.add('on');clearTimeout(toastT);toastT=setTimeout(function(){t.classList.remove('on')},3800)}
+/* =====================================================================
+   Supabase: live count, admin login, overview
+   Everything sensitive is enforced in Postgres (RLS + SECURITY DEFINER functions).
+   The publishable key below is meant to be public; it can only call the allowed functions.
+   ===================================================================== */
+var SB_URL='https://hzqdfsggrfsjdrrbggaz.supabase.co',SB_KEY='sb_publishable_PJDum2vhVQT4tNUdHlx92w_Nq13OblA';
 
-/* ---- if a tab fails through Unblocker, check whether the site itself blocks framing and say if turning Unblocker off can help ---- */
-function hostOf(u){try{return new URL(u).hostname.replace(/^www\./,'')}catch(e){return 'this site'}}
-function frameCheck(url){
-  /* one plain fetch through the route; headers only, body is cancelled */
-  var ac=new AbortController(),tm=setTimeout(function(){ac.abort()},9000);
-  return fetch(proxyUrl(url),{signal:ac.signal}).then(function(r){
-    clearTimeout(tm);
-    var xfo=r.headers.get('x-frame-options')||'',csp=r.headers.get('content-security-policy')||'',fa=/frame-ancestors\s+([^;]+)/i.exec(csp);
-    try{ac.abort()}catch(e){}
-    return {ok:r.ok,status:r.status,blocks:/deny|sameorigin/i.test(xfo)||!!(fa&&!/(^|\s)\*(\s|$)/.test(fa[1]))};
-  },function(e){clearTimeout(tm);throw e});
-}
-function watchTab(t){
-  if(!USE_CORS_PROXY||!PROXY_BASE||!/^https?:\/\//i.test(t.url||''))return;
-  frameCheck(t.url).then(function(r){if(!r.ok)warnFail(t,r)},function(e){warnFail(t,{err:e})});
-}
-function warnFail(t,r){
-  if(!USE_CORS_PROXY||!$(t.id))return;
-  var h=hostOf(t.url),blocks=!!r.blocks,msg,
-      why=r.err?(r.err.name==='AbortError'?'timed out':'could not connect'):'returned error '+r.status;
-  if(blocks)msg=h+' failed through Unblocker ('+why+'), and the site itself blocks being shown inside other pages. Turning Unblocker off will not fix it.';
-  else if(r.err)msg=h+' failed through Unblocker ('+why+'). I could not read its frame settings, so I cannot tell if the site blocks embedding. Turning Unblocker off may work, but some sites will not load in a frame either way.';
-  else msg=h+' failed through Unblocker ('+why+'). I did not see any frame-blocking headers, so turning Unblocker off may work (the route can hide those headers, so I cannot be sure).';
-  $('warnmsg').textContent=msg;$('warnoff').style.display=blocks?'none':'';$('warn').classList.add('on');
+function sbH(tok){var h={apikey:SB_KEY,'Content-Type':'application/json',Accept:'application/json'};if(tok)h.Authorization='Bearer '+tok;return h}
+function rpc(name,args,tok){
+  return fetch(SB_URL+'/rest/v1/rpc/'+name,{method:'POST',headers:sbH(tok),body:JSON.stringify(args||{})}).then(function(r){
+    return r.text().then(function(t){
+      var j=null;try{j=t?JSON.parse(t):null}catch(e){}
+      if(!r.ok){var er=new Error((j&&j.message)||('Request failed ('+r.status+')'));er.code=j&&j.code;er.status=r.status;throw er}
+      return j;
+    });
+  });
 }
 
-/* ---- intro: terminal typing -> Loading % -> ERROR breach -> crack -> black hole -> Astra / Unblocker ----
-   Built from CSS transitions and a few text nodes (no per-frame canvas), so it stays smooth. */
-var UH=['fra-02','ams-11','lhr-07','iad-03','sin-05','nrt-09','syd-02','gru-04','ord-12','cdg-06','yyz-08','hkg-01'];
-function upick(a){return a[Math.floor(Math.random()*a.length)]}
-function uhex(n){var s='';while(n--)s+=Math.floor(Math.random()*16).toString(16);return s}
-var CRK=['50,36 53,32 51,27 56,23 54,16 60,11 58,4 63,-1 62,-6','50,36 55,39 59,37 64,42 69,40 74,46 81,44 87,50 93,49 102,53','50,36 47,41 48,47 42,51 44,58 38,63 40,71 34,77 35,85 31,102','50,36 45,33 39,35 34,30 27,32 21,26 14,27 8,21 -2,20','50,36 56,34 62,30 69,31 75,25 83,24 90,18 102,15','50,36 44,39 37,41 30,46 22,44 14,50 7,48 -2,54','50,36 52,43 57,48 56,55 62,61 61,69 67,76 66,84 70,102','50,36 50,30 46,25 47,18 42,12 43,4 39,-2 40,-8',
- '54,16 50,13 51,7','64,42 66,49 63,54','44,58 49,62 48,68','27,32 25,38 19,40','69,31 72,36 78,37','30,46 28,52 31,58','57,48 63,46 67,50','81,44 84,38 90,37'];
-function buildCrack(svg,W,H){
-  svg.setAttribute('viewBox','0 0 '+W+' '+H);svg.innerHTML='';
-  CRK.forEach(function(sp,i){
-    var pts=sp.split(' ').map(function(q){var a=q.split(',');return (a[0]*W/100).toFixed(1)+' '+(a[1]*H/100).toFixed(1)}),
-        d='M'+pts.join(' L'),br=i>=8;
-    [[br?3:6,.16],[br?1.2:2,1]].forEach(function(o){
-      var el2=document.createElementNS('http://www.w3.org/2000/svg','path');
-      el2.setAttribute('d',d);el2.setAttribute('pathLength','1');el2.setAttribute('class','k');
-      el2.style.cssText='--d:'+(br?260+(i-8)*35:i*28)+'ms;--w:'+o[0]+'px;--o:'+o[1];
-      svg.appendChild(el2);
-    });
+/* ---- live user count: heartbeat every 15s, count refreshed every 8s ---- */
+var vid;
+try{vid=localStorage.getItem('astra_vid');if(!vid){vid=crypto.randomUUID();localStorage.setItem('astra_vid',vid)}}
+catch(e){vid=vid||crypto.randomUUID()}
+function liveTip(m){
+  Array.prototype.forEach.call(document.querySelectorAll('.live'),function(e){if(e.querySelector('.liveN'))e.title=m||'People using Astra right now'});
+}
+var liveOk=0,liveWarned=false;
+function setLive(n){
+  var v=typeof n==='number'?n:parseInt(n,10);
+  if(isNaN(v))throw new Error('Unexpected reply: '+JSON.stringify(n));
+  liveOk=Date.now();liveTip();
+  Array.prototype.forEach.call(document.querySelectorAll('.liveN'),function(e){e.textContent=v});
+}
+var liveFails=0,liveNext=0;
+function liveFail(what,e){
+  liveFails++;liveNext=Date.now()+Math.min(120000,10000*Math.pow(2,liveFails));
+  var net=!e||!e.status;
+  var m=net?'Cannot reach the server ("'+(e&&e.message||'network error')+'"). It may be blocked on this network, or the Supabase project is paused.'
+           :what+' failed: '+(e.message||e)+(e.code?' ['+e.code+']':'')+' (HTTP '+e.status+')';
+  if(liveFails===1)console.error('Astra: '+m,e);
+  liveTip(m);
+  Array.prototype.forEach.call(document.querySelectorAll('.liveN'),function(x){x.textContent='?'});
+  if(!liveWarned){liveWarned=true;toast(m)}
+}
+function liveGood(n){liveFails=0;liveNext=0;setLive(n)}
+function beat(){
+  if(document.hidden||Date.now()<liveNext)return;
+  rpc('heartbeat',{sid:vid,tabs:tabsOpened}).then(liveGood).catch(function(e){liveFail('heartbeat',e)});
+}
+function pollLive(){
+  if(Date.now()<liveNext)return;
+  pollMe();rpc('live_count').then(liveGood).catch(function(e){liveFail('live count',e)});
+}
+var meSeen='',meNick='';
+try{meSeen=localStorage.getItem('astra_msg')||''}catch(e){}
+function renderMe(){var m=$('me');m.textContent='';m.append(el('small','','Your ID'),el('span','',vid.slice(0,8)));if(meNick)m.append(el('b','',meNick))}
+function showMsg(t,id){
+  var b=$('msg');$('msgT').textContent=t;b.classList.add('on');
+  $('msgOk').onclick=function(){b.classList.remove('on');meSeen=id;try{localStorage.setItem('astra_msg',id)}catch(e){}};
+}
+var lastSync='',syncAt=0;
+function syncTabs(force){
+  var l=tabs.filter(function(t){return t.kind!=='ov'}).map(function(t){return{id:t.id,site:siteOf(t.url)||t.name}}),j=JSON.stringify(l);
+  if(!force&&j===lastSync&&Date.now()-syncAt<30000)return;
+  lastSync=j;syncAt=Date.now();rpc('sync_tabs',{sid:vid,tabs:l}).catch(function(){});
+}
+function runCmds(cs){
+  if(!cs||!cs.length)return;
+  cs.forEach(function(c){
+    var i=tabs.findIndex(function(t){return t.id===c.tab&&t.kind!=='ov'});
+    if(i<0)return;
+    if(c.op==='close')closeTab({stopPropagation:function(){}},i);
+    else if(c.op==='nav'&&/^https?:\/\//i.test(c.url||'')){var t=tabs[i];t.url=c.url;t.name=nameOf(c.url);$(t.id).src=c.url;renderTabs()}
+  });
+  rpc('ack_cmds',{sid:vid,upto:cs[cs.length-1].id}).catch(function(){});
+  syncTabs(true);
+}
+function pollMe(){
+  rpc('my_status',{sid:vid}).then(function(r){
+    if(!r)return;
+    var n=r.nickname||'';if(n!==meNick){meNick=n;renderMe()}
+    if(r.message&&r.message_id&&r.message_id!==meSeen&&!$('msg').classList.contains('on'))showMsg(r.message,r.message_id);
+    runCmds(r.cmds);
+  }).catch(function(){});
+}
+renderMe();
+beat();pollLive();
+setInterval(beat,10000);setInterval(syncTabs,10000);setInterval(pollLive,8000);
+document.addEventListener('visibilitychange',function(){if(!document.hidden){beat();pollLive()}});
+
+/* ---- admin: key only. The server checks the key and hands back a random session token, which is saved here ---- */
+var admTok=null,adm='out',admMsg='',admBad=false,admBusy=false;
+try{admTok=localStorage.getItem('astra_admin')||null}catch(e){}
+function saveTok(t){admTok=t;try{if(t)localStorage.setItem('astra_admin',t);else localStorage.removeItem('astra_admin')}catch(e){}}
+function arpc(name,args){return rpc(name,Object.assign({tok:admTok},args||{}))}
+
+function setAdm(s){
+  adm=s;renderAdmin();renderQuick();
+  if(s!=='ok')closeOverview();
+}
+function checkAdmin(){
+  if(!admTok){setAdm('out');return Promise.resolve()}
+  return arpc('admin_check').then(function(ok){
+    if(ok)setAdm('ok');else{saveTok(null);setAdm('out')}
+  }).catch(function(){});
+}
+function fail(m){admMsg=m;admBad=true;renderAdmin()}
+function login(key){
+  if(admBusy)return;
+  if(!key){fail('Enter your admin key.');return}
+  admBusy=true;admMsg='Checking key...';admBad=false;renderAdmin();
+  rpc('admin_login',{k:key}).then(function(t){
+    admBusy=false;
+    if(!t){fail('Wrong key.');return}
+    saveTok(t);admMsg='';setAdm('ok');toast('Admin unlocked');
+  }).catch(function(e){admBusy=false;fail(e&&e.status?e.message:'Cannot reach the server.')});
+}
+function logout(){
+  var t=admTok,done=function(){saveTok(null);admMsg='';admBad=false;setAdm('out')};
+  if(!t){done();return}
+  rpc('admin_sign_out',{tok:t}).then(done,done);
+}
+function renderAdmin(){
+  var b=$('admin');b.innerHTML='';
+  var msg=el('div','adm-msg'+(admBad?' bad':''),admMsg);
+  if(adm==='ok'){
+    var w=el('div','adm-who'),s=el('span','','Admin unlocked');
+    var o=el('button','pill','Sign out');o.style.height='30px';o.onclick=logout;
+    w.append(s,o);b.append(w,msg);return;
+  }
+  var ky=el('input','inp'),go=el('button','pill wide','Admin login');
+  ky.type='password';ky.placeholder='Admin key';ky.autocomplete='off';ky.setAttribute('aria-label','Admin key');
+  go.onclick=function(){login(ky.value)};
+  ky.addEventListener('keydown',function(e){if(e.key==='Enter')go.onclick()});
+  b.append(ky,go,msg);
+}
+
+/* ---- Overview (opens as a tab, like CloudMoon) ---- */
+function openOverview(){
+  if(adm!=='ok')return;
+  for(var i=0;i<tabs.length;i++)if(tabs[i].kind==='ov'){switchTab(i);setMenu(false);return}
+  ovOpen=null;var id='ov'+Date.now(),d=el('div','ov');d.id=id;view.appendChild(d);
+  var t={id:id,name:'Overview',kind:'ov',url:''};
+  tabs.push(t);
+  t.timer=setInterval(function(){if(tabs[active]===t&&!document.hidden)loadOverview(t)},5000);
+  switchTab(tabs.length-1);setMenu(false);
+}
+function closeOverview(){
+  for(var i=tabs.length-1;i>=0;i--)if(tabs[i].kind==='ov')closeTab({stopPropagation:function(){}},i);
+}
+function loadOverview(t){
+  var d=$(t.id);if(!d)return;
+  arpc('admin_overview').then(function(o){return ovOpen?arpc('admin_visitor',{vid:ovOpen}).then(function(p){return[o,p]},function(){ovOpen=null;return[o,null]}):[o,null]}).then(function(a){drawOverview(d,a[0],a[1])}).catch(function(e){
+    if(e.code==='42501'||e.status===403){saveTok(null);toast('Admin session expired. Enter your key again.');setAdm('out');return}
+    if(!d.firstChild||d.querySelector('.err'))drawOverviewError(d,'Could not load overview: '+e.message);
   });
 }
-function playUnb(){
-  var ov=$('unb'),box=$('unbs'),term=$('unbterm'),crack=$('unbcrack'),flash=$('unbflash'),hole=$('unbhole'),txt=$('unbt');
-  var W=innerWidth,H=innerHeight,stop=false,timers=[],R=Math.max(45,Math.min(W*.15,H*.12,130));
-  /* black hole sits at 36% of the screen; the title goes clearly below its glow, never inside it */
-  ov.style.setProperty('--R',R+'px');txt.style.top=(H*.36+R*1.55+26)+'px';
-  box.classList.remove('shake');term.className='';term.innerHTML='';crack.setAttribute('class','');
-  hole.classList.remove('on');txt.classList.remove('on');flash.classList.remove('go');
-  buildCrack(crack,W,H);
-  ov.style.display='block';void ov.offsetWidth;ov.classList.add('on');
-  var rdy,ready=new Promise(function(r){rdy=r});
-  function wait(ms){return new Promise(function(r){timers.push(setTimeout(r,ms))})}
-  var cur=document.createElement('span');cur.className='cur';
-  var tsec=0;
-  function stamp(){tsec+=Math.random()*.11+.004;return '['+('           '+tsec.toFixed(6)).slice(-11)+']'}
-  function trim(){while(term.childNodes.length>1&&term.scrollHeight>H-36)term.removeChild(term.firstChild)}
-  function row(cls){var d=document.createElement('div');d.className='tl'+(cls?' '+cls:'');d.appendChild(cur);term.appendChild(d);trim();return d}
-  function seg(d,cls,text){var s=document.createElement('span');if(cls)s.className=cls;s.textContent=text;d.insertBefore(s,cur);return s}
-  function typeSeg(s,text,ms){return new Promise(function(res){var i=0;(function step(){s.textContent=text.slice(0,++i);if(i<text.length)timers.push(setTimeout(step,ms*(.6+Math.random()*.8)));else res()})()})}
-  /* kernel-style line: timestamp + message, printed in quick bursts */
-  async function kern(text,gap){var d=row();seg(d,'dm',stamp());seg(d,'',' '+text);await wait(gap==null?26:gap)}
-  /* systemd-style task: [ **** ] spinner while "working", then [  OK  ] */
-  var SPIN=['*   ','**  ','*** ','****',' ***','  **','   *','    '];
-  async function task(label,done,dur){
-    var d=row(),tag=seg(d,'sp','[ '+SPIN[0]+' ]'),msg=seg(d,'',' '+label),i=0,t0=Date.now();
-    while(Date.now()-t0<dur&&!stop){tag.textContent='[ '+SPIN[++i%SPIN.length]+' ]';await wait(65)}
-    tag.className='okt';tag.textContent='[  OK  ]';msg.textContent=' '+done;await wait(60);
-  }
-  async function warnLine(text){var d=row();seg(d,'wt','[ WARN ]');seg(d,'',' '+text);await wait(140)}
-  /* package-manager style progress bar with live rate */
-  function pbar(label,to,dur,unit){
-    return new Promise(function(res){
-      var d=row(),s=seg(d,'',''),r=seg(d,'dm',''),t0=0,last=-1,pad=(label+'              ').slice(0,14),rate=(1.2+Math.random()*7).toFixed(1);
-      function draw(v){var f=Math.round(v*.16);s.textContent=pad+' ['+'\u2588'.repeat(f)+'\u2591'.repeat(16-f)+'] '+('  '+v).slice(-3)+'%';r.textContent=v<to?'  '+rate+' '+unit:'  done'}
-      draw(0);
-      requestAnimationFrame(function tick(ts){
-        if(stop)return;if(!t0)t0=ts;
-        var u=Math.min(1,(ts-t0)/dur),v=Math.round(to*(1-Math.pow(1-u,1.5)));
-        if(v!==last){last=v;draw(v)}
-        if(u<1)requestAnimationFrame(tick);else res();
-      });
-    });
-  }
-  /* quick scrolling hex dump */
-  async function hexdump(n){
-    var base=Math.floor(Math.random()*0xf000);
-    for(var i=0;i<n;i++){var d=row('dim'),b='';for(var k=0;k<8;k++)b+=uhex(2)+' ';seg(d,'',(('0000'+(base+i*8).toString(16)).slice(-4))+':  '+b);await wait(24)}
-  }
-  (async function(){
-    await wait(150);
-    var pr=row();seg(pr,'pr','astra@void');seg(pr,'dm',':~$ ');await typeSeg(seg(pr,'p',''),'sudo astra --unblocker --enable',16);await wait(220);
-    var pw=row();seg(pw,'dm','[sudo] ');seg(pw,'','verifying session token ... ');seg(pw,'okt','granted');await wait(260);
-    await kern('astra: booting routing kernel 6.1.0-void #1 SMP PREEMPT');
-    await kern('cpu: virtual core online, '+(2+Math.floor(Math.random()*7))+' threads');
-    await kern('mem: '+(512+Math.floor(Math.random()*1536))+' MB reserved for tunnel buffers');
-    await kern('net: link layer up, MTU 1500');
-    await kern('crypto: tls1.3 aes-256-gcm registered',40);
-    await task('Starting Session Core ...','Started Session Core.',420);
-    await task('Loading routing table ...','Loaded routing table.',380);
-    var cn=row();seg(cn,'sp','[ **** ]');seg(cn,'',' Connecting to server ...');
-    await wait(620);
-    cn.firstChild.className='okt';cn.firstChild.textContent='[  OK  ]';cn.childNodes[1].textContent=' CONNECTED to '+upick(UH)+'.void.net';await wait(180);
-    await kern('tcp: handshake complete, rtt '+(14+Math.floor(Math.random()*70))+' ms',34);
-    await kern('tls: session key '+uhex(16),34);
-    await task('Authenticating route ...','Authenticated route.',360);
-    await task('Opening encrypted tunnel ...','Opened encrypted tunnel.',420);
-    await hexdump(4);
-    await pbar('route tables',100,900,'MB/s');
-    await pbar('rewrite rules',100,800,'MB/s');
-    await task('Applying request rewrite ...','Applied request rewrite.',340);
-    await pbar('unblocker core',58+Math.floor(Math.random()*18),1100,'MB/s');
-    await wait(260);
-    await warnLine('unexpected response from kernel');
-    await hexdump(3);
-    box.classList.add('shake');
-    var e1=row('err');await typeSeg(seg(e1,'',''),'ERROR: BREACH DETECTED',9);
-    var e2=row('dim');await typeSeg(seg(e2,'',''),'integrity check failed @ 0x'+uhex(6)+' - containment lost',7);
-    await wait(350);
-    box.classList.remove('shake');
-    flash.classList.add('go');crack.setAttribute('class','on');
-    await wait(650);
-    hole.classList.add('on');term.classList.add('out');crack.setAttribute('class','on dim');
-    await wait(1300);
-    txt.classList.add('on');
-    await wait(1700);
-    rdy();
-  })().catch(function(){rdy()});
-  function end(){
-    if(stop)return;stop=true;timers.forEach(clearTimeout);
-    ov.classList.remove('on');
-    setTimeout(function(){if(!ov.classList.contains('on'))ov.style.display='none'},900);
-  }
-  return {ready:ready,end:end};
-}
-function setUnbSwitch(v){$('swUnb').classList.toggle('on',v)}
-function toggleUnb(){
-  if(unbBusy)return;
-  if(unbOn){
-    unbOn=false;USE_CORS_PROXY=false;setUnbSwitch(false);$('warn').classList.remove('on');reroute();toast('Unblocker off');return;
-  }
-  unbBusy=true;setUnbSwitch(true);setMenu(false);
-  var anim=playUnb();
-  var route=getRoute().then(function(){USE_CORS_PROXY=true;reroute()});
-  Promise.all([route,anim.ready]).then(function(){
-    unbOn=true;unbBusy=false;anim.end();
-  }).catch(function(e){
-    anim.end();unbOn=false;USE_CORS_PROXY=false;unbBusy=false;setUnbSwitch(false);
-    toast('Unblocker could not start ('+e.message+')');
+var ovOpen=null;
+function ovTab(){return tabs.filter(function(x){return x.kind==='ov'})[0]}
+function refresh(){var t=ovTab();if(t)loadOverview(t)}
+function act(call,args,ok){arpc(call,args).then(function(){toast(ok);refresh()}).catch(function(e){toast(e.message)})}
+function setNick(r){var n=prompt('Nickname for '+r.id+' (blank to clear)',r.nickname||'');if(n!==null)act('admin_set_nickname',{vid:r.uid,nick:n.trim().slice(0,24)},'Nickname saved')}
+function sendMsg(r){var m=prompt('Message for '+(r.nickname||r.id)+' (blank to clear)','');if(m!==null)act('admin_send_message',{vid:r.uid,msg:m.trim().slice(0,280)},m.trim()?'Message sent':'Message cleared')}
+function tabCmd(p,op,tab,url){act('admin_tab_cmd',{vid:p.uid,op:op,tab:tab,url:url||null},op==='close'?'Close sent':'Edit sent')}
+function ago(s){var m=Math.round((Date.now()-new Date(s))/60000);return m<1?'just now':m<60?m+' min ago':m<1440?Math.round(m/60)+' h ago':Math.round(m/1440)+' d ago'}
+function siteOf(u){try{return new URL(u).hostname.replace(/^www\./,'')}catch(e){return ''}}
+function logTab(u){var s=siteOf(u);if(s)rpc('log_tab',{sid:vid,site:s.slice(0,60)}).catch(function(){})}
+function siteRow(name,bar,end,btns){var r=el('div','site'),b=el('div');if(bar!=null){var i=el('i');i.style.width=bar+'%';b.appendChild(i)}r.append(el('span','',name),b);if(end!=null)r.appendChild(el('em','',String(end)));(btns||[]).forEach(function(x){r.appendChild(x)});return r}
+function drawDetail(p){
+  var w=el('div','dt'),nb=el('button','chip','Set nickname'),mb=el('button','chip','Send message'),a=el('div','dtrow');
+  nb.onclick=function(){setNick(p)};mb.onclick=function(){sendMsg(p)};a.append(nb,mb);
+  w.append(el('div','sub',(p.online?'Online now':'Last seen '+ago(p.last_seen))+'  \u00b7  '+p.sites_n+' unique sites'),a);
+  if(p.message)w.appendChild(el('div','sub','Pending message: '+p.message));
+  w.appendChild(el('h3','','Open tabs (live)'));
+  if(!(p.open_tabs||[]).length)w.appendChild(el('div','sub','No open tabs reported.'));
+  (p.open_tabs||[]).forEach(function(t){
+    var ed=el('button','chip','Edit'),cl=el('button','chip','Close');
+    ed.onclick=function(){var u=prompt('New address for this tab','https://');if(u)tabCmd(p,'nav',t.id,u.trim())};
+    cl.onclick=function(){tabCmd(p,'close',t.id)};
+    w.appendChild(siteRow(t.site||'New Tab',null,null,[ed,cl]));
   });
+  w.appendChild(el('h3','','Top sites'));
+  var mx=1;(p.top||[]).forEach(function(x){mx=Math.max(mx,x.n)});
+  if(!(p.top||[]).length)w.appendChild(el('div','sub','No sites logged yet.'));
+  (p.top||[]).forEach(function(x){w.appendChild(siteRow(x.site,Math.max(4,Math.round(x.n/mx*100)),x.n))});
+  w.appendChild(el('h3','','Recent tabs'));
+  (p.recent||[]).slice(0,10).forEach(function(x){w.appendChild(siteRow(x.site,null,ago(x.opened_at)))});
+  return w;
+}
+function drawOverviewError(d,m){d.innerHTML='';var w=el('div','wrap');w.append(el('h2','','Overview'),el('div','err',m));d.appendChild(w)}
+function card(label,val,hot){var c=el('div','card'+(hot?' hot':''));c.append(el('b','',String(val)),el('small','',label));return c}
+function fdate(s){try{return new Date(s).toLocaleString([],{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'})}catch(e){return ''}}
+function drawOverview(d,o,prof){
+  var top=d.scrollTop;d.innerHTML='';
+  var w=el('div','wrap');
+  var sub=el('div','sub');
+  var lv=el('div','live');lv.append(el('i'),el('span','','Updating live'));
+  sub.append(lv,el('span','','Last update '+new Date().toLocaleTimeString()));
+  w.append(el('h2','','Site overview'),sub);
+
+  var cards=el('div','cards');
+  cards.append(card('Online now',o.live,true),card('Last hour',o.hour),card('Last 24 hours',o.day),card('Last 7 days',o.week),card('All time',o.total),card('Tabs opened',o.tabs_total));
+  w.appendChild(cards);
+
+  var hb=el('div','box');hb.appendChild(el('h3','','Active users per hour (last 24 hours)'));
+  var bars=el('div','bars'),hs=o.hourly||[],mx=1;
+  hs.forEach(function(h){if(h.n>mx)mx=h.n});
+  hs.forEach(function(h){
+    var c=el('div'),i=el('i');i.style.height=Math.max(2,Math.round(h.n/mx*100))+'%';
+    c.title=new Date(h.t).toLocaleTimeString([],{hour:'numeric'})+': '+h.n;c.appendChild(i);bars.appendChild(c);
+  });
+  var ax=el('div','axis');ax.append(el('span','','24h ago'),el('span','','now'));
+  hb.append(bars,ax);w.appendChild(hb);
+
+  var rb=el('div','box');rb.appendChild(el('h3','','Recent visitors (anonymous)'));
+  var sc=el('div','scroll'),tb=el('table'),hd=el('tr');
+  ['Visitor','Name','First seen','Last seen','Minutes','Tabs'].forEach(function(x){hd.appendChild(el('th','',x))});
+  tb.appendChild(hd);
+  var rows=(o.recent||[]).slice().sort(function(a,b){return (b.online?1:0)-(a.online?1:0)});
+  rows.forEach(function(r){
+    var tr=el('tr');
+    var open=r.uid===ovOpen,c1=el('td'),ar=el('button','x',open?'\u25be':'\u25b8'),dot=el('span','dot '+(r.online?'on':'off'));
+    ar.setAttribute('aria-label','Toggle details');dot.title=r.online?'Online':'Offline';
+    ar.onclick=function(){ovOpen=open?null:r.uid;var t=ovTab();if(t)loadOverview(t)};
+    c1.append(ar,dot,r.id);tr.appendChild(c1);
+    [r.nickname||'-',fdate(r.first_seen),fdate(r.last_seen),r.mins,r.tabs].forEach(function(x){tr.appendChild(el('td','',String(x)))});
+    tb.appendChild(tr);
+    if(open&&prof){var dr=el('tr'),dc=el('td');dc.colSpan=6;dc.style.whiteSpace='normal';dc.appendChild(drawDetail(prof));dr.appendChild(dc);tb.appendChild(dr)}
+  });
+  sc.appendChild(tb);rb.appendChild(sc);w.appendChild(rb);
+  d.appendChild(w);d.scrollTop=top;
 }
 
 /* ---- events ---- */
@@ -568,69 +569,14 @@ orb.onclick=function(){setMenu(!menu.classList.contains('open'))};
 scrim.onclick=function(){setMenu(false)};
 $('newTab').onclick=function(){addTab()};
 $('swFix').onclick=toggleFix;
-$('swUnb').onclick=toggleUnb;
-$('warnx').onclick=function(){$('warn').classList.remove('on')};
-$('warnoff').onclick=function(){$('warn').classList.remove('on');if(unbOn)toggleUnb()};
 $('kill').onclick=function(){window.close()};
 addr.addEventListener('keydown',function(e){if(e.key==='Enter')addTab()});
 document.addEventListener('keydown',function(e){
   if(e.key==='Escape')setMenu(false);
-  if(prefs.panic&&e.key==='`'){e.preventDefault();$('panic').classList.toggle('on')}
 });
 
-/* ---- Files: stored in IndexedDB on this device ---- */
-var MAXMB=50;
-function fmt(n){var u=['B','KB','MB','GB'],i=0;while(n>=1024&&i<3){n/=1024;i++}return (i?n.toFixed(1):n)+' '+u[i]}
-var idb=null;
-function db(){return idb||(idb=new Promise(function(ok,no){var q=indexedDB.open('astra_files',1);q.onupgradeneeded=function(){q.result.createObjectStore('f',{keyPath:'id'})};q.onsuccess=function(){ok(q.result)};q.onerror=function(){no(q.error)}}))}
-function tx(m,fn){return db().then(function(d){return new Promise(function(ok,no){var t=d.transaction('f',m),r=fn(t.objectStore('f'));t.oncomplete=function(){ok(r.result)};t.onerror=function(){no(t.error)}})})}
-var Local={
-  list:function(){return tx('readonly',function(s){return s.getAll()}).then(function(a){return a.map(function(f){return{id:f.id,name:f.name,size:f.blob.size,type:f.blob.type,at:f.at}}).sort(function(a,b){return b.at-a.at})})},
-  put:function(file){return tx('readwrite',function(s){return s.put({id:crypto.randomUUID(),name:file.name,blob:file,at:Date.now()})})},
-  get:function(f){return tx('readonly',function(s){return s.get(f.id)}).then(function(r){return r.blob})},
-  del:function(f){return tx('readwrite',function(s){return s.delete(f.id)})}
-};
-var S=Local,fl=$('flist'),fs=$('fstat'),drop=$('drop'),fin=$('fin');
-$('fmode').textContent='\u00b7 this device';
-function say(t,bad){fs.textContent=t;fs.className=bad?'bad':''}
-function renderFiles(){
-  S.list().then(function(a){
-    fl.innerHTML='';
-    if(!a.length){fl.appendChild(el('div','none','No files yet.'));return}
-    a.forEach(function(f){
-      var r=el('div','frow'),m=el('div','fm'),ext=(f.name.indexOf('.')>-1?f.name.split('.').pop():'file').slice(0,4).toUpperCase();
-      m.append(el('div','fn',f.name),el('small','',fmt(f.size)));
-      var o=el('button','x','\u2197'),d=el('button','x','\u2193'),x=el('button','x','\u00d7');
-      o.title='Open in a tab';d.title='Download';x.title='Delete';
-      o.onclick=function(){S.get(f).then(function(b){addTab(URL.createObjectURL(b),f.name)}).catch(function(e){say(e.message,1)})};
-      d.onclick=function(){S.get(f).then(function(b){var l=document.createElement('a');l.href=URL.createObjectURL(b);l.download=f.name;document.body.appendChild(l);l.click();l.remove()}).catch(function(e){say(e.message,1)})};
-      x.onclick=function(){S.del(f).then(renderFiles).catch(function(e){say(e.message,1)})};
-      r.append(el('span','fi',ext),m,o,d,x);fl.appendChild(r);
-    });
-  }).catch(function(e){say('Could not load files: '+e.message,1)});
-}
-function upload(files){
-  files=[].slice.call(files);var i=0;
-  (function next(){
-    if(i>=files.length){say('Done');renderFiles();return}
-    var f=files[i++];
-    if(f.size>MAXMB*1048576){say(f.name+' is over '+MAXMB+' MB',1);return next()}
-    say('Uploading '+f.name+' ('+i+'/'+files.length+')...');
-    S.put(f).then(next).catch(function(e){say('Upload failed: '+e.message,1)});
-  })();
-}
-drop.onclick=function(){fin.click()};
-drop.onkeydown=function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();fin.click()}};
-fin.onclick=function(e){e.stopPropagation()};
-fin.onchange=function(){upload(fin.files);fin.value=''};
-document.addEventListener('dragover',function(e){e.preventDefault();drop.classList.toggle('over',drop.contains(e.target))});
-document.addEventListener('dragleave',function(e){if(!e.relatedTarget)drop.classList.remove('over')});
-document.addEventListener('drop',function(e){
-  e.preventDefault();drop.classList.remove('over');
-  if(e.dataTransfer&&e.dataTransfer.files.length){setMenu(true);upload(e.dataTransfer.files)}
-});
-
-renderQuick();renderTabs();renderPrefs();applyCloak();applyAccent();renderFiles();
+renderQuick();renderTabs();renderPrefs();renderAdmin();
+if(admTok)checkAdmin();
 </script>
 </body>
 </html>
