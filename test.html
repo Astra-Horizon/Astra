@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html><body style="background:#000;color:#fff;font:20px sans-serif">
+<p>HTML loaded.</p>
+<p id="js" style="color:#f66">JavaScript is NOT running.</p>
+<p id="ls" style="color:#f66">localStorage is NOT available.</p>
+<script>
+document.getElementById('js').textContent='JavaScript is running.';
+document.getElementById('js').style.color='#6f6';
+try{localStorage.setItem('t','1');document.getElementById('ls').textContent='localStorage works.';document.getElementById('ls').style.color='#6f6'}catch(e){document.getElementById('ls').textContent='localStorage blocked: '+e.message}
+</script>
+</body></html>
