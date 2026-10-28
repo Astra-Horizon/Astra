@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<script>window.onerror=function(m,s,l,c){var d=document.createElement('pre');d.style.cssText='position:fixed;z-index:9999;left:0;right:0;top:0;margin:0;padding:12px;background:#300;color:#fff;font:12px monospace;white-space:pre-wrap';d.textContent='Astra error: '+m+' (line '+l+':'+c+')';document.documentElement.appendChild(d)}</script>
+
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Astra</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23000'/%3E%3Cg transform='rotate(-18 16 16)' fill='none' stroke='%23fff'%3E%3Cellipse cx='16' cy='16' rx='14' ry='3.8' stroke-width='1.7'/%3E%3Ccircle cx='16' cy='16' r='6.4' fill='%23000' stroke-width='1.1'/%3E%3Cpath d='M2 16a14 3.8 0 0 0 28 0' stroke-width='2'/%3E%3C/g%3E%3C/svg%3E">
@@ -140,7 +142,7 @@ input[type=color]{width:38px;height:38px;padding:0;border:0;border-radius:50%;ba
 <body>
 <div class="stars" id="stars" aria-hidden="true"></div>
 
-<section id="launch" class="center" hidden>
+<section id="launch" class="center">
   <h1>Astra</h1>
     <button class="btn big" id="launchBtn">Open Astra</button>
   <p id="note" role="status" style="min-height:1.5em;font-size:.88rem"></p>
@@ -187,6 +189,16 @@ var MODES=[['right','Right edge','move to the right edge'],['left','Left edge','
 var ENG='https://duckduckgo.com/?q=',CLOUD='https://web.cloudmoonapp.com/',QUICK=[['CloudMoon',CLOUD]];
 var P={done:0,accent:'#ffffff',scheme:'dark',modes:['right'],links:[],fix:0,orb:[.93,.5]};
 try{Object.assign(P,JSON.parse(localStorage.getItem('astra_prefs')||'{}'))}catch(e){}
+(function(){
+  var ok=function(k){return MODES.some(function(m){return m[0]===k})};
+  if(typeof P.accent!=='string'||!/^#[0-9a-f]{6}$/i.test(P.accent))P.accent='#ffffff';
+  if(P.scheme!=='light')P.scheme='dark';
+  if(!Array.isArray(P.modes))P.modes=[];
+  P.modes=P.modes.filter(ok);if(!P.modes.length)P.modes=['right'];
+  if(!Array.isArray(P.links))P.links=[];
+  P.links=P.links.filter(function(l){return Array.isArray(l)&&typeof l[0]==='string'&&typeof l[1]==='string'});
+  if(!Array.isArray(P.orb)||P.orb.length!==2||isNaN(P.orb[0])||isNaN(P.orb[1]))P.orb=[.93,.5];
+})();
 function save(){try{localStorage.setItem('astra_prefs',JSON.stringify(P))}catch(e){}}
 function lum(h){var n=parseInt(h.slice(1),16);return(((n>>16)&255)*.299+((n>>8)&255)*.587+(n&255)*.114)/255}
 function theme(){var r=document.documentElement;r.style.setProperty('--a',P.accent);r.style.setProperty('--on',lum(P.accent)>.55?'#000':'#fff');r.dataset.s=P.scheme}
@@ -213,7 +225,7 @@ function launcher(){
 
 /* ============ app ============ */
 function app(){
-  document.title='Astra';$('app').hidden=false;$('stars').hidden=true;
+  document.title='Astra';$('launch').hidden=true;$('app').hidden=false;$('stars').hidden=true;
   var ALLOW='fullscreen; autoplay; clipboard-write; gamepad; microphone; camera; pointer-lock; keyboard-map';
   var stage=$('stage'),home=$('home'),menu=$('menu'),scrim=$('scrim'),orb=$('orb'),tabs=[],cur=-1,setView=false;
   var T={on:false,i:0,steps:[],wait:null,end:null};
