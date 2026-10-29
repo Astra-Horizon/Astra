@@ -49,18 +49,18 @@ h1{font:800 clamp(2.4rem,8vw,3.8rem)/1.05 var(--head);letter-spacing:-.04em;marg
 .tile:hover{transform:translateY(-3px);background:rgba(255,255,255,.16)}
 .av{width:36px;height:36px;border-radius:calc(var(--r)*.45);display:grid;place-items:center;font-weight:800;font-size:15px;color:#fff;background:#333}
 #hhint{margin-top:26px;color:rgba(255,255,255,.55);font-size:12.5px;text-align:center;max-width:380px;line-height:1.5}
-.edge{position:fixed;z-index:55}
+.edge{position:fixed;z-index:58;pointer-events:auto;touch-action:pan-y}
 .edge::after{content:"";position:absolute;background:var(--a);opacity:var(--eo);transition:opacity .3s;border-radius:2px}.edge:hover::after{opacity:.85}
 .peek .edge::after{opacity:.55}
-.edge[data-p=right],.edge[data-p=left]{top:0;bottom:0;width:14px}
+.edge[data-p=right],.edge[data-p=left]{top:0;bottom:0;width:28px}
 .edge[data-p=right]{right:0}.edge[data-p=left]{left:0}
-.edge[data-p=top],.edge[data-p=bottom]{left:0;right:0;height:14px}
+.edge[data-p=top],.edge[data-p=bottom]{left:0;right:0;height:28px}
 .edge[data-p=top]{top:0}.edge[data-p=bottom]{bottom:0}
 .edge[data-p=right]::after,.edge[data-p=left]::after{top:42%;bottom:42%;width:3px}
 .edge[data-p=right]::after{right:1px}.edge[data-p=left]::after{left:1px}
 .edge[data-p=top]::after,.edge[data-p=bottom]::after{left:42%;right:42%;height:3px}
 .edge[data-p=top]::after{top:1px}.edge[data-p=bottom]::after{bottom:1px}
-.edge[data-p=corner]{top:0;right:0;width:48px;height:48px;z-index:56}
+.edge[data-p=corner]{top:0;right:0;width:64px;height:64px;z-index:59}
 #orb{position:fixed;z-index:50;width:var(--osz);height:var(--osz);border-radius:50%;border:2px solid var(--a);background:rgba(0,0,0,.7);padding:0;display:grid;place-items:center;opacity:.55;touch-action:none;transition:opacity .2s,transform .2s,left .3s cubic-bezier(.2,.9,.3,1),top .3s cubic-bezier(.2,.9,.3,1)}
 #orb:hover,#orb.drag{opacity:1;transform:scale(1.08)}
 #orb.drag{transition:opacity .2s,transform .2s}
@@ -219,6 +219,15 @@ body.legacy .edge{display:none!important}
 
 
 
+/* Menu visibility hardening: keep the panel above the scrim and ensure every trigger reveals it. */
+#scrim{z-index:9000!important}
+#menu{z-index:9010!important;pointer-events:auto}
+#menu.open{visibility:visible!important;opacity:1!important;display:block!important;pointer-events:auto!important;transition:transform .22s ease,opacity .18s ease!important}
+#menu[data-pos="right"].open,#menu[data-pos="left"].open,#menu[data-pos="top"].open,#menu[data-pos="bottom"].open{transform:translate(0,0)!important}
+#menu[data-pos="center"].open{transform:translate(-50%,-50%)!important}
+body.legacy #scrim{z-index:9000!important}
+body.legacy #menu[data-pos="right"]{z-index:9010!important}
+
 /* Astra UI refresh — visual-only redesign; legacy positioning and behavior above are preserved. */
 :root{--head:'Manrope',system-ui,sans-serif;--body:'Manrope',system-ui,sans-serif;--r:22px;--p:rgba(13,13,15,.97);--s:rgba(255,255,255,.055);--l:rgba(255,255,255,.12)}
 html,body{background:#080809;color:#f5f5f5;letter-spacing:-.012em}
@@ -342,7 +351,7 @@ function el(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!=null
 var tT=0;function toast(m){var t=$('toast');t.textContent=m;t.classList.add('on');clearTimeout(tT);tT=setTimeout(function(){t.classList.remove('on')},3000)}
 
 var ACC=['#ffffff','#a78bfa','#38bdf8','#4ade80','#fb7185','#fb923c','#facc15'];
-var MODES=[['right','Right edge','move to the right edge'],['left','Left edge','move to the left edge'],['top','Top edge','move to the top edge'],['bottom','Bottom edge','move to the bottom edge'],['corner','Top-right corner','hover the top-right corner'],['orb','Floating button','tap the floating button'],['key','Hotkey (Alt+M)','press Alt+M'],['legacy','Legacy button','tap the fixed three-dot button in the top-right']];
+var MODES=[['right','Right edge','move within 26px of the right edge'],['left','Left edge','move within 26px of the left edge'],['top','Top edge','move within 26px of the top edge'],['bottom','Bottom edge','move within 26px of the bottom edge'],['corner','Top-right corner','hover the top-right corner'],['orb','Floating button','tap the floating button'],['key','Hotkey (Alt+M)','press Alt+M'],['legacy','Legacy button','tap the fixed three-dot button in the top-right']];
 var ENGS=[['DuckDuckGo','https://duckduckgo.com/?q='],['Google','https://www.google.com/search?q='],['Bing','https://www.bing.com/search?q='],['Brave','https://search.brave.com/search?q=']];
 var FONTS=[['Astra',"'Unbounded','Manrope',system-ui,sans-serif","'Manrope',system-ui,sans-serif"],['Grotesk',"'Space Grotesk',system-ui,sans-serif","'Space Grotesk',system-ui,sans-serif"],['Editorial',"'Fraunces',Georgia,serif","'Manrope',system-ui,sans-serif"],['Mono',"'JetBrains Mono',monospace","'JetBrains Mono',monospace"],['System','system-ui,sans-serif','system-ui,sans-serif']];
 var WF=[['Default','inherit'],['Unbounded',"'Unbounded',sans-serif"],['Manrope',"'Manrope',sans-serif"],['Grotesk',"'Space Grotesk',sans-serif"],['Fraunces',"'Fraunces',serif"],['Mono',"'JetBrains Mono',monospace"],['Orbitron',"'Orbitron',sans-serif"],['Bebas',"'Bebas Neue',sans-serif"],['Pacifico',"'Pacifico',cursive"],['Caveat',"'Caveat',cursive"],['Pixel',"'Press Start 2P',monospace"]];
@@ -635,8 +644,17 @@ function app(){
   function disarm(){clearTimeout(leaveT);leaveT=0}
   function openMenu(pos){
     hoverOpen=false;disarm();
-    if(P.legacy)pos='right';menu.dataset.pos=pos;menu.setAttribute('aria-hidden','false');if(!P.legacy)scrim.classList.add('on');else scrim.classList.remove('on');setView=false;renderMenu();
-    requestAnimationFrame(function(){menu.classList.add('open')});fire('open');
+    if(P.legacy)pos='right';
+    menu.dataset.pos=pos||'center';
+    menu.setAttribute('aria-hidden','false');
+    if(!P.legacy)scrim.classList.add('on');else scrim.classList.remove('on');
+    setView=false;renderMenu();
+    /* Apply the open state immediately; do not rely on a delayed animation frame
+       that can be interrupted by edge-pointer events or rapid pointer movement. */
+    menu.classList.add('open');
+    menu.style.visibility='visible';menu.style.opacity='1';menu.style.pointerEvents='auto';
+    menu.style.zIndex='9010';
+    fire('open');
   }
   function closeMenu(force){
     if(T.on&&!force)return;
@@ -649,16 +667,27 @@ function app(){
   scrim.onclick=function(){if(!P.legacy)closeMenu()};$('bX').onclick=function(){closeMenu()};
   function trig(e){if(ED||lock||isOpen()||!$('wiz').hidden)return;openMenu(pFor(e.dataset.p));hoverOpen=true}
   Array.prototype.forEach.call(document.querySelectorAll('.edge'),function(e){
-    ['pointerenter','pointermove','mouseenter','mouseover','pointerdown','touchstart'].forEach(function(n){e.addEventListener(n,function(){trig(e)},{passive:true})});
+    ['pointerenter','mouseenter','pointerdown','touchstart'].forEach(function(n){e.addEventListener(n,function(){trig(e)},{passive:true})});
     e.addEventListener('pointerleave',function(){lock=false});
   });
-  document.addEventListener('mousemove',function(e){
-    var w=innerWidth,h=innerHeight,k=null;
-    if(has('corner')&&e.clientX>=w-40&&e.clientY<=40)k='corner';
-    else if(has('right')&&e.clientX>=w-6)k='right';else if(has('left')&&e.clientX<=5)k='left';
-    else if(has('top')&&e.clientY<=5)k='top';else if(has('bottom')&&e.clientY>=h-6)k='bottom';
-    if(k)trig({dataset:{p:k}});
-  });
+  // Use a generous invisible hit zone: relying on the last 5px of the screen
+  // made edge activation unreliable on scaled displays and browser chrome.
+  var edgeCandidate=null,edgeFrame=0;
+  function checkEdgePointer(e){
+    if(P.legacy||ED||lock||isOpen()||!$('wiz').hidden)return;
+    var w=document.documentElement.clientWidth||window.innerWidth;
+    var h=document.documentElement.clientHeight||window.innerHeight;
+    var x=e.clientX,y=e.clientY,k=null,zone=26;
+    if(has('corner')&&x>=w-64&&y<=64)k='corner';
+    else if(has('right')&&x>=w-zone)k='right';
+    else if(has('left')&&x<=zone)k='left';
+    else if(has('top')&&y<=zone)k='top';
+    else if(has('bottom')&&y>=h-zone)k='bottom';
+    if(k){edgeCandidate=k;if(!edgeFrame){edgeFrame=requestAnimationFrame(function(){edgeFrame=0;var target=edgeCandidate;edgeCandidate=null;if(target)trig({dataset:{p:target}})})}}
+  }
+  document.addEventListener('pointermove',checkEdgePointer,{passive:true});
+  document.addEventListener('mousemove',checkEdgePointer,{passive:true});
+  window.addEventListener('blur',function(){edgeCandidate=null;if(edgeFrame){cancelAnimationFrame(edgeFrame);edgeFrame=0}});
   var px=0,py=0;
   function armClose(){
     if(leaveT||!hoverOpen||!P.close||T.on||setView)return;
