@@ -31,6 +31,13 @@ h1{font:800 clamp(2.4rem,8vw,3.8rem)/1.05 var(--head);letter-spacing:-.04em;marg
 .center{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:24px;text-align:center}
 .center p{margin:0;max-width:420px;color:var(--d);line-height:1.6}
 #launch h1{background:linear-gradient(180deg,#fff 5%,#b9b9c3 95%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:6px}
+#fsg{position:fixed;inset:0;z-index:9999;background:#0f172a;display:flex;align-items:center;justify-content:center;color:#f8fafc;font-family:var(--body)}
+#fsg .panel{text-align:center;background:#1e293b;padding:30px;border-radius:12px;width:88%;max-width:400px;border:1px solid #334155}
+#fsg h2{margin:0 0 8px;font:800 1.2rem var(--head);letter-spacing:-.03em}
+#fsg p{color:#94a3b8;font-size:14px;line-height:1.5;margin:0 0 18px}
+#fsg .tm{font-size:28px;font-weight:700;color:var(--a);margin:12px 0}
+#fsg .btn{width:100%;margin-top:8px}
+#fsg .btn.ghost{border:1px solid #475569;color:#94a3b8}
 #stage{position:fixed;inset:0;background:#000}
 #stage iframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:#fff;display:none}
 #stage iframe.on{display:block;animation:fi .25s}
@@ -208,6 +215,7 @@ input.inp[type=color]{width:100%;height:44px;border-radius:calc(var(--r)*.6);pad
     <div id="mSet" hidden></div>
   </nav>
 </div>
+<div id="fsg" hidden><div class="panel"><h2 id="fsT"></h2><div class="tm" id="fsN" hidden></div><p id="fsP"></p><button class="btn" id="fsGo"></button><button class="btn ghost" id="fsSkip">Continue without fullscreen</button></div></div>
 <div id="wiz" class="center" hidden></div>
 <div id="coach" hidden role="status"><div class="bar"><i id="cbar"></i></div><b id="ct"></b><p id="cs"></p><div class="nav"><button class="btn ghost" id="cx">Exit tour</button><button class="btn" id="cn">Next</button></div></div>
 <div id="toast" role="status" aria-live="polite"></div>
@@ -232,7 +240,7 @@ var PFL=[['ultra','Ultra 60fps'],['balanced','Balanced 30fps'],['saver','Saver 1
 var WPS=[['none','Black','#000'],['aurora','Aurora','radial-gradient(at 20% 10%,#3b1d7a,transparent 55%),radial-gradient(at 85% 90%,#0b5a6b,transparent 55%),#05060d'],['dusk','Dusk','linear-gradient(160deg,#2a0f3d,#7a2e4f 60%,#e8845a)'],['ocean','Ocean','linear-gradient(180deg,#02121f,#064663)'],['forest','Forest','linear-gradient(#040a1c,#0c2b3a 55%,#16463d)'],['jungle','Jungle','linear-gradient(#0e4b3a,#146b3f 55%,#041a10)'],['galaxy','Galaxy','radial-gradient(circle at 50% 50%,#ffd7aa,#3b2a6b 30%,#02030a 65%)'],['stars','Stars','#000'],['blackhole','Black hole','radial-gradient(circle at 50% 50%,#000 0 11%,#fb923c 13%,#7c2d12 28%,#000 58%)'],['water','Water','linear-gradient(#0c4a6e,#0ea5e9 50%,#075985)'],['sunset','Sunset','linear-gradient(#2e1065,#be185d 45%,#fb923c 68%,#1e293b 69%)'],['custom','Image / GIF','#000']];
 var THEMES=[['Black hole','#fb923c','dark','blackhole',1],['Deep water','#38bdf8','dark','water',0],['Sunset','#fb923c','dark','sunset',2],['Mono','#ffffff','dark','none',0],['Aurora','#a78bfa','dark','aurora',1],['Sunset','#fb923c','dark','dusk',2],['Ocean','#38bdf8','dark','ocean',0],['Forest','#4ade80','dark','forest',3],['Jungle','#4ade80','dark','jungle',3],['Galaxy','#a78bfa','dark','galaxy',1],['Rose','#fb7185','light','stars',1]];
 var CLOUD='https://web.cloudmoonapp.com/',QUICK=[['CloudMoon',CLOUD]];
-function DEF(){return{done:0,accent:'#fb923c',scheme:'dark',modes:['right'],links:[],fix:0,orb:[.93,.5],font:0,round:26,blur:22,mo:94,mw:420,pos:'auto',edge:16,osz:44,close:1,wall:'blackhole',img:'',wb:0,dim:0,h24:0,secs:0,greetOn:1,name:'',eng:0,ts:96,nomo:0,title:'',icon:'',autoFs:1,anim:1,perf:'balanced',bhDisk:1,bhDet:60,bhCol:'orange',bhSize:50,bhSpeed:50,bhTilt:40,bhStars:1,bhGlow:60,bhRing:1,waHue:200,waLayers:5,waAmp:50,waSpeed:50,waFoam:1,waLight:50,suSize:50,suPos:50,suHue:0,suClouds:1,suStars:1,suWater:1,suSpeed:50,ttlTime:1,ttl:'',tsz:64,tcol:'white',tglow:1,srch:1,sw:540,ph:'',tilesOn:1,tl:'grid',tst:'glass',lay:{t:[50,30],s:[50,47],g:[50,68]},tp:{},tsc:{},items:[]}}
+function DEF(){return{done:0,accent:'#fb923c',scheme:'dark',modes:['right'],links:[],fix:0,orb:[.93,.5],font:0,round:26,blur:22,mo:94,mw:420,pos:'auto',edge:16,osz:44,close:1,wall:'blackhole',img:'',wb:0,dim:0,h24:0,secs:0,greetOn:1,name:'',eng:0,ts:96,nomo:0,title:'',icon:'',autoFs:1,fsDelay:3,anim:1,perf:'balanced',bhDisk:1,bhDet:60,bhCol:'orange',bhSize:50,bhSpeed:50,bhTilt:40,bhStars:1,bhGlow:60,bhRing:1,waHue:200,waLayers:5,waAmp:50,waSpeed:50,waFoam:1,waLight:50,suSize:50,suPos:50,suHue:0,suClouds:1,suStars:1,suWater:1,suSpeed:50,ttlTime:1,ttl:'',tsz:64,tcol:'white',tglow:1,srch:1,sw:540,ph:'',tilesOn:1,tl:'grid',tst:'glass',lay:{t:[50,30],s:[50,47],g:[50,68]},tp:{},tsc:{},items:[]}}
 var P=DEF();
 try{Object.assign(P,JSON.parse(localStorage.getItem('astra_prefs')||'{}'))}catch(e){}
 function fixP(){
@@ -244,7 +252,7 @@ function fixP(){
   if(!Array.isArray(P.links))P.links=[];
   P.links=P.links.filter(function(l){return Array.isArray(l)&&typeof l[0]==='string'&&typeof l[1]==='string'});
   if(!Array.isArray(P.orb)||P.orb.length!==2||isNaN(P.orb[0])||isNaN(P.orb[1]))P.orb=[.93,.5];
-  ['round','blur','mo','mw','edge','osz','wb','dim','ts','font','eng','bhDet','bhSize','bhSpeed','bhTilt','bhGlow','waHue','waLayers','waAmp','waSpeed','waLight','suSize','suPos','suHue','suSpeed','tsz','sw'].forEach(function(k){P[k]=+P[k];if(isNaN(P[k]))P[k]=D[k]});
+  ['round','blur','mo','mw','edge','osz','wb','dim','ts','font','eng','bhDet','bhSize','bhSpeed','bhTilt','bhGlow','waHue','waLayers','waAmp','waSpeed','waLight','suSize','suPos','suHue','suSpeed','tsz','sw','fsDelay'].forEach(function(k){P[k]=+P[k];if(isNaN(P[k]))P[k]=D[k]});
   [['bhCol',['orange','accent','blue','white']],['tcol',['white','accent']],['tl',['grid','row','col']],['tst',['glass','solid','min']]].forEach(function(x){if(x[1].indexOf(P[x[0]])<0)P[x[0]]=D[x[0]]});
   if(!P.lay||typeof P.lay!=='object')P.lay=D.lay;
   ['t','s','g'].forEach(function(k){var v=P.lay[k];if(!Array.isArray(v)||v.length!==2||isNaN(v[0])||isNaN(v[1]))P.lay[k]=D.lay[k]});
@@ -427,7 +435,7 @@ function app(){
   window.__app=1;window.lay=lay;look();$('launch').hidden=true;$('app').hidden=false;
   var ALLOW='fullscreen; autoplay; clipboard-write; gamepad; microphone; camera; pointer-lock; keyboard-map';
   var ED=false,SEL=null,stage=$('stage'),home=$('home'),menu=$('menu'),scrim=$('scrim'),orb=$('orb'),tabs=[],cur=-1,setView=false,S='look';
-  var T={on:false,i:0,steps:[],wait:null,end:null};
+  var T={on:false,i:0,steps:[],wait:null,end:null},fsNoPause=false;
   function has(m){return P.modes.indexOf(m)>-1}
   function host(u){try{return new URL(u).hostname.replace(/^www\./,'')}catch(e){return ''}}
   function nameOf(u){var h=host(u);return !h?'Tab':h.indexOf('cloudmoon')>-1?'CloudMoon':h.charAt(0).toUpperCase()+h.slice(1)}
@@ -629,7 +637,7 @@ function app(){
   $('rl').onclick=function(){var t=tabs[cur];if(!t){toast('Nothing to reload');return}var s=t.url;t.f.src='about:blank';setTimeout(function(){t.f.src=s},50);closeMenu()};
   $('fs').onclick=function(){
     var D=topDoc(),de=D.documentElement;
-    if(D.fullscreenElement||document.fullscreenElement){(D.fullscreenElement?D:document).exitFullscreen()}
+    if(D.fullscreenElement||document.fullscreenElement){fsNoPause=true;(D.fullscreenElement?D:document).exitFullscreen()}
     else if(de.requestFullscreen)de.requestFullscreen().catch(function(){toast('Fullscreen isn\u2019t available here')});
   };
   $('bSet').onclick=function(){setView=!setView;renderMenu()};
@@ -798,7 +806,7 @@ function app(){
       b.appendChild(el('p','hint','Name and icon for this window. Leave empty for the Astra defaults.'));
       b.appendChild(txt2('Window title','title','Astra',40));
       b.appendChild(txt2('Window icon (one emoji)','icon','\ud83d\ude80',4));
-      b.appendChild(swRow('Auto fullscreen','Go fullscreen on your first click after Astra opens.','autoFs'));
+      b.append(swRow('Fullscreen session','Start screen, loads in fullscreen, and pauses if you leave fullscreen.','autoFs'),rng('Loading countdown','fsDelay',0,10,1,'s'));
     }else if(S==='links'){
       b.appendChild(el('div','lbl','Add a quick link'));
       var two=el('div','two'),n=el('input','inp'),u=el('input','inp'),ad=el('button','chip','Add link');
@@ -905,15 +913,39 @@ function app(){
   ]}
 
   applyModes();renderHome();renderW();lay();renderMenu();select(-1);tick();kick();
-  /* go fullscreen on the first click inside the popup (browsers require a click) */
-  if(window.__ASTRA||window.name==='astra-app'){
-    var fsOnce=function(){
-      document.removeEventListener('pointerdown',fsOnce,true);
-      if(P.autoFs&&!document.fullscreenElement&&document.documentElement.requestFullscreen)document.documentElement.requestFullscreen().catch(function(){});
-    };
-    document.addEventListener('pointerdown',fsOnce,true);
+  /* ---- fullscreen session: start screen -> fullscreen -> loading -> app; pause if fullscreen is left ---- */
+  var gateOn=!!(P.autoFs&&(window.__ASTRA||window.name==='astra-app')),started=false,windowed=false,cd=0,cdT=0,FSG=$('fsg'),appEl=$('app');
+  function begin(){if(!P.done)run(tutSteps());else{document.body.classList.add('peek');setTimeout(function(){document.body.classList.remove('peek')},5000)}}
+  function gview(mode){
+    clearInterval(cdT);FSG.hidden=false;appEl.style.visibility='hidden';
+    $('fsT').textContent=mode==='gate'?'Ready':mode==='load'?'Loading\u2026':'Session paused';
+    $('fsP').textContent=mode==='gate'?'Click start to open Astra in fullscreen.':mode==='load'?'Setting up your workspace. Please stay in fullscreen.':'Fullscreen exited.';
+    $('fsN').hidden=mode!=='load';$('fsN').textContent=cd;
+    $('fsGo').hidden=mode==='load';$('fsGo').textContent=mode==='gate'?'Start':'Resume';
+    $('fsSkip').hidden=mode==='load';
   }
-  if(!P.done)run(tutSteps());else{document.body.classList.add('peek');setTimeout(function(){document.body.classList.remove('peek')},5000)}
+  function reveal(){
+    clearInterval(cdT);FSG.hidden=true;appEl.style.visibility='';kick();
+    if(!started){started=true;begin()}
+  }
+  function enterFs(){
+    windowed=false;
+    var de=document.documentElement,r=de.requestFullscreen?de.requestFullscreen():Promise.reject();
+    r.then(function(){
+      if(started||P.fsDelay<1){reveal();return}
+      cd=P.fsDelay;gview('load');
+      cdT=setInterval(function(){cd--;$('fsN').textContent=cd;if(cd<=0)reveal()},1000);
+    },function(){windowed=true;toast('Fullscreen isn\u2019t available here');reveal()});
+  }
+  $('fsGo').onclick=enterFs;
+  $('fsSkip').onclick=function(){windowed=true;reveal()};
+  document.addEventListener('fullscreenchange',function(){
+    if(document.fullscreenElement){if(!FSG.hidden&&!started&&!cdT)return;windowed=false;return}
+    if(fsNoPause){fsNoPause=false;return}
+    if(!gateOn||windowed)return;
+    gview('pause');
+  });
+  if(gateOn)gview('gate');else{started=true;begin()}
 }
 })();
 </script>
