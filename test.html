@@ -241,8 +241,14 @@ input.inp[type=color]{width:100%;height:44px;border-radius:calc(var(--r)*.6);pad
     .box p { font-size: 13px; color: var(--muted); margin-bottom: 12px; }
     button { width: 100%; padding: 12px 20px; font-size: 14px; font-weight: 600; color: white; background: var(--primary); border: none; border-radius: 6px; cursor: pointer; }
     button:disabled { background: #cbd5e1; cursor: not-allowed; }
-    .fs-wrap { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #0f172a; z-index: 9999; justify-content: center; align-items: center; color: #f8fafc; }
-    .panel { text-align: center; background: #1e293b; padding: 30px; border-radius: 12px; width: 88%; max-width: 400px; border: 1px solid #334155; }
+    .fs-wrap { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #000; z-index: 9999; justify-content: center; align-items: center; color: #fff; }
+    .panel { text-align: center; background: transparent; padding: 30px; width: 88%; max-width: 400px; }
+    .bp-t { margin: 0; font: 800 clamp(2.6rem, 11vw, 4.4rem)/1 system-ui, sans-serif; letter-spacing: .32em; padding-left: .32em; color: #fff; animation: bpin 1s ease-out both; }
+    .bp-r { display: flex; align-items: center; gap: 14px; margin: 22px auto; max-width: 300px; color: #fff; opacity: .55; animation: bpin 1s .25s ease-out both; }
+    .bp-r::before, .bp-r::after { content: ""; flex: 1; height: 1px; background: #fff; }
+    .bp-r i { width: 5px; height: 5px; background: #fff; transform: rotate(45deg); }
+    .bp-s { margin: 0; font: 600 12px/1 system-ui, sans-serif; letter-spacing: .5em; padding-left: .5em; text-transform: uppercase; color: #fff; opacity: .7; animation: bpin 1s .5s ease-out both; }
+    @keyframes bpin { from { opacity: 0; transform: translateY(8px); } }
     .panel h2 { margin: 0 0 8px; }
     .timer { font-size: 28px; font-weight: 700; color: #38bdf8; margin: 15px 0; }
     #wf { border: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; display: none; background: #000; }
@@ -250,7 +256,7 @@ input.inp[type=color]{width:100%;height:44px;border-radius:calc(var(--r)*.6);pad
     .active #cView, .paused #pView { display: block; }
     .ready .overlay, .paused #wf { display: none !important; }
     .ready #wf { display: block; }
-    .sec-btn { background: transparent; border: 1px solid #475569; color: #94a3b8; margin-top: 10px; }
+    .sec-btn { background: transparent; border: 1px solid #fff; color: #fff; margin-top: 10px; }
     @media (max-width: 760px) { .container { grid-template-columns: 1fr; } header { padding: 12px 20px; } }
   </style>
 </head>
@@ -277,14 +283,14 @@ input.inp[type=color]{width:100%;height:44px;border-radius:calc(var(--r)*.6);pad
   <div id="fs" class="fs-wrap">
     <div class="overlay"><div class="panel">
       <div id="cView">
-        <img id="ld" alt="" style="width:120px;height:120px;object-fit:contain;border-radius:16px;margin-bottom:8px">
-        <h2>Bypassed</h2>
-        <p style="color:#94a3b8; font-size:14px; margin:0;">Made By Axel</p>
+        <h1 class="bp-t">BYPASS</h1>
+        <div class="bp-r"><i></i></div>
+        <p class="bp-s">Made by Axel</p>
       </div>
       <div id="pView">
         <h2>Session Paused</h2>
-        <p style="color:#94a3b8; font-size:14px; margin-bottom:20px;">Fullscreen exited.</p>
-        <button id="rBtn" style="background:#475569;">Resume Lesson</button>
+        <p style="color:#aaa; font-size:14px; margin-bottom:20px;">Fullscreen exited.</p>
+        <button id="rBtn" style="background:#fff; color:#000;">Resume Lesson</button>
         <button id="hBtn" class="sec-btn">Back to Dashboard</button>
       </div>
     </div></div>
@@ -296,8 +302,6 @@ input.inp[type=color]{width:100%;height:44px;border-radius:calc(var(--r)*.6);pad
     const TITLE0 = document.title, FAV0 = document.getElementById('fav').href;
     let time = 100, loop = null, done = false;
     const fs = document.getElementById('fs'), wf = document.getElementById('wf'), gBox = document.getElementById('gBox');
-    const IMG = __IMG__;
-    document.getElementById('ld').src = IMG;
 
     function setLock(isLocked) {
       gBox.className = "box" + (isLocked ? " locked" : "");
@@ -537,9 +541,7 @@ function eduSite(){
   var app=SRC.replace('<head>',function(){return '<head><script>window.__ASTRA=1;window.__EMBED=1<\/script>'});
   var tpl=$('edu').textContent.replace(/<\\\/script>/g,'</'+'script>');
   var js=JSON.stringify(app).replace(/</g,'\\u003c').replace(/\u2028/g,'\\u2028').replace(/\u2029/g,'\\u2029');
-  /* The new tab is about:blank, so Bypassed.png needs a full address built from this page's location. */
-  var img=JSON.stringify(new URL('Bypassed.png',location.href).href).replace(/</g,'\\u003c');
-  return tpl.replace('__IMG__',function(){return img}).replace('__APP__',function(){return js});
+  return tpl.replace('__APP__',function(){return js});
 }
 
 function launcher(){
