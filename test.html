@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <script>window.onerror=function(m,s,l,c){var d=document.createElement('pre');d.style.cssText='position:fixed;z-index:9999;left:0;right:0;top:0;margin:0;padding:12px;background:#300;color:#fff;font:12px monospace;white-space:pre-wrap';d.textContent='Astra error: '+m+' (line '+l+':'+c+')';document.documentElement.appendChild(d)}</script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Astra</title>
+<title>Launch</title>
 <link id="fav" rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23000'/%3E%3Cg transform='rotate(-18 16 16)' fill='none' stroke='%23fff'%3E%3Cellipse cx='16' cy='16' rx='14' ry='3.8' stroke-width='1.7'/%3E%3Ccircle cx='16' cy='16' r='6.4' fill='%23000' stroke-width='1.1'/%3E%3Cpath d='M2 16a14 3.8 0 0 0 28 0' stroke-width='2'/%3E%3C/g%3E%3C/svg%3E">
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800&family=Manrope:wght@500;700;800&family=Space+Grotesk:wght@500;700&family=Fraunces:wght@600;800&family=JetBrains+Mono:wght@500;700&family=Orbitron:wght@700&family=Bebas+Neue&family=Pacifico&family=Caveat:wght@700&family=Press+Start+2P&display=swap" rel="stylesheet">
 <style>
@@ -30,7 +30,9 @@ h1{font:800 clamp(2.4rem,8vw,3.8rem)/1.05 var(--head);letter-spacing:-.04em;marg
 .btn.ghost:hover{color:#fff;transform:none}
 .center{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:24px;text-align:center}
 .center p{margin:0;max-width:420px;color:var(--d);line-height:1.6}
-#launch h1{background:linear-gradient(180deg,#fff 5%,#b9b9c3 95%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:6px}
+#launch{background:#0a0a0d}
+#launchBtn{min-width:176px;font-size:1.05rem;letter-spacing:.01em}
+#launchBtn:active{transform:translateY(0) scale(.98)}
 #stage{position:fixed;inset:0;background:#000}
 #stage iframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:#fff;display:none}
 #stage iframe.on{display:block;animation:fi .25s}
@@ -181,10 +183,8 @@ input.inp[type=color]{width:100%;height:44px;border-radius:calc(var(--r)*.6);pad
 </head>
 <body>
 <section id="launch" class="center">
-  <h1>Astra</h1>
-  <button class="btn big" id="launchBtn">Open Astra</button>
+  <button class="btn big" id="launchBtn">Launch</button>
   <p id="note" role="status" style="min-height:1.5em;font-size:.88rem"></p>
-  <button class="btn ghost" id="hereBtn" hidden>Open here instead</button>
 </section>
 <div id="app" hidden>
   <div id="stage"><div id="home">
@@ -216,6 +216,8 @@ input.inp[type=color]{width:100%;height:44px;border-radius:calc(var(--r)*.6);pad
 var SRC='<!DOCTYPE html>'+document.documentElement.outerHTML;
 var $=function(i){return document.getElementById(i)};
 function el(t,c,x){var e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e}
+/* When the app runs inside the full-screen frame, the tab itself belongs to the parent document. */
+function topDoc(){try{if(window.parent!==window&&window.parent.document)return window.parent.document}catch(e){}return document}
 var tT=0;function toast(m){var t=$('toast');t.textContent=m;t.classList.add('on');clearTimeout(tT);tT=setTimeout(function(){t.classList.remove('on')},3000)}
 
 var ACC=['#ffffff','#a78bfa','#38bdf8','#4ade80','#fb7185','#fb923c','#facc15'];
@@ -380,7 +382,14 @@ function look(){
   s.setProperty('--wp',bg);s.setProperty('--tz',P.tsz+'px');s.setProperty('--tc',P.tcol==='accent'?P.accent:'#fff');s.setProperty('--tg',P.tglow?'0 0 30px '+P.accent+'99':'none');var cv=$('bg');if(cv)cv.hidden=!SCN[P.wall];if(window.lay)window.lay();kick();
   document.body.classList.toggle('nomo',!!P.nomo);
   var ws=$('wps');if(ws){ws.hidden=P.wall!=='stars';if(!ws.children.length&&P.wall==='stars')for(var i=0;i<70;i++){var d=el('i'),z=Math.random()<.2?3:2;d.style.cssText='left:'+Math.random()*100+'%;top:'+Math.random()*100+'%;width:'+z+'px;height:'+z+'px;animation-delay:'+(-Math.random()*4)+'s;animation-duration:'+(3+Math.random()*4)+'s';ws.appendChild(d)}}
-  if(window.__app){document.title=P.title||'Astra';$('fav').href=P.icon?'data:image/svg+xml,'+encodeURIComponent("<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='26' font-size='26'>"+P.icon+"</text></svg>"):FAV0}
+  if(window.__app){
+    /* set the real browser-tab title and icon (the tab belongs to the parent when running inside the full-screen frame) */
+    try{
+      var D=topDoc();D.title=P.title||'Astra';
+      var fl=D.getElementById('fav');if(!fl){fl=D.createElement('link');fl.id='fav';fl.rel='icon';D.head.appendChild(fl)}
+      fl.href=P.icon?'data:image/svg+xml,'+encodeURIComponent("<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='26' font-size='26'>"+P.icon+"</text></svg>"):FAV0;
+    }catch(e){}
+  }
 }
 look();
 function pickFile(cb){
@@ -391,19 +400,170 @@ function pickFile(cb){
   r.readAsDataURL(f)};
  i.click();
 }
-if(window.name==='astra-app'||window.__ASTRA||location.hash==='#app')app();else launcher();
+
+/* =====================================================================
+   Entry point.
+   - Normal load (the original tab): ONLY the Launch button is ever shown.
+   - window.__ASTRA is set solely inside the full-screen frame that the
+     math-site tab creates, so the app never renders in the original tab.
+   ===================================================================== */
+if(window.__ASTRA)app();else launcher();
+
+/* The decoy math website that is written into the new about:blank tab. */
+function mathSite(appSrc){
+  var S='script';
+  var css=[
+    ':root{--ink:#1b2440;--mut:#5b6685;--bg:#f6f8fc;--card:#fff;--ln:#e3e8f2;--pri:#3b5bdb;--pri2:#5c7cfa;--acc:#12b886;--warm:#f59f00}',
+    '*{box-sizing:border-box}html{scroll-behavior:smooth}',
+    'body{margin:0;font:16px/1.6 "Segoe UI",system-ui,-apple-system,Roboto,Helvetica,Arial,sans-serif;color:var(--ink);background:var(--bg)}',
+    'a{color:inherit;text-decoration:none}',
+    '.wrap{max-width:1120px;margin:0 auto;padding:0 20px}',
+    'header{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--ln)}',
+    '.bar{display:flex;align-items:center;gap:20px;height:64px}',
+    '.logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:1.25rem;letter-spacing:-.02em}',
+    '.logo i{display:grid;place-items:center;width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--pri),var(--pri2));color:#fff;font:italic 700 1.1rem Georgia,serif}',
+    'nav{display:flex;gap:4px;margin-left:12px;flex:1}',
+    'nav a{padding:8px 12px;border-radius:8px;color:var(--mut);font-weight:600;font-size:.95rem}',
+    'nav a:hover{background:#eef2ff;color:var(--pri)}',
+    '.btn{border:0;border-radius:10px;padding:11px 20px;font:700 .95rem inherit;font-family:inherit;cursor:pointer;transition:transform .15s,box-shadow .15s,background .15s}',
+    '.btn.p{background:var(--pri);color:#fff;box-shadow:0 6px 16px rgba(59,91,219,.28)}',
+    '.btn.p:hover{background:#3150c4;transform:translateY(-1px)}',
+    '.btn.o{background:#fff;color:var(--pri);border:1.5px solid #c5d0fa}',
+    '.btn.o:hover{background:#eef2ff}',
+    '.burger{display:none;margin-left:auto;background:none;border:0;font-size:1.6rem;cursor:pointer;color:var(--ink)}',
+    '.hero{background:linear-gradient(135deg,#edf2ff 0%,#f3f0ff 55%,#e6fcf5 100%);border-bottom:1px solid var(--ln)}',
+    '.hero .wrap{display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center;padding-top:64px;padding-bottom:64px}',
+    '.tag{display:inline-block;padding:5px 12px;border-radius:99px;background:#fff;border:1px solid #d0d9fb;color:var(--pri);font-weight:700;font-size:.8rem;margin-bottom:16px}',
+    'h1{font-size:clamp(2rem,4.6vw,3.2rem);line-height:1.12;letter-spacing:-.03em;margin:0 0 16px}',
+    '.hero p.lead{font-size:1.12rem;color:var(--mut);max-width:520px;margin:0 0 26px}',
+    '.cta{display:flex;flex-wrap:wrap;gap:12px}',
+    '.board{background:#fff;border:1px solid var(--ln);border-radius:20px;padding:26px;box-shadow:0 20px 50px rgba(40,60,140,.12)}',
+    '.board small{color:var(--mut);font-weight:700;text-transform:uppercase;letter-spacing:.08em;font-size:.72rem}',
+    '.eq{font:italic 1.5rem/1.9 Georgia,"Times New Roman",serif;text-align:center;margin:10px 0}',
+    '.eq b{font-style:normal;color:var(--pri)}',
+    '.frac{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;margin:0 4px;line-height:1.25}',
+    '.frac>span:first-child{border-bottom:1.5px solid currentColor;padding:0 6px}',
+    '.stats{display:flex;gap:24px;flex-wrap:wrap;margin-top:34px}',
+    '.stats div{font-size:.9rem;color:var(--mut)}.stats b{display:block;font-size:1.5rem;color:var(--ink)}',
+    'section.s{padding:64px 0}',
+    'h2{font-size:clamp(1.5rem,3vw,2.1rem);letter-spacing:-.02em;margin:0 0 8px}',
+    '.sub{color:var(--mut);margin:0 0 30px;max-width:620px}',
+    '.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:18px}',
+    '.card{background:var(--card);border:1px solid var(--ln);border-radius:16px;padding:22px;transition:transform .2s,box-shadow .2s}',
+    '.card:hover{transform:translateY(-3px);box-shadow:0 14px 30px rgba(40,60,140,.1)}',
+    '.ico{display:grid;place-items:center;width:46px;height:46px;border-radius:12px;font:italic 700 1.3rem Georgia,serif;margin-bottom:12px;color:#fff}',
+    '.card h3{margin:0 0 6px;font-size:1.1rem}.card p{margin:0 0 12px;color:var(--mut);font-size:.95rem}',
+    '.card a{color:var(--pri);font-weight:700;font-size:.92rem}',
+    '.two{display:grid;grid-template-columns:1fr 1fr;gap:24px}',
+    '.panel{background:#fff;border:1px solid var(--ln);border-radius:18px;padding:26px}',
+    '.panel h3{margin:0 0 4px}',
+    '.step{display:flex;gap:12px;padding:10px 0;border-top:1px dashed var(--ln)}',
+    '.step:first-of-type{border-top:0}',
+    '.step em{flex:none;display:grid;place-items:center;width:26px;height:26px;border-radius:50%;background:#eef2ff;color:var(--pri);font:700 .8rem system-ui;font-style:normal}',
+    '.calc label{display:inline-flex;align-items:center;gap:6px;font:italic 1.1rem Georgia,serif;margin:0 10px 10px 0}',
+    '.calc input{width:70px;padding:8px 10px;border:1.5px solid var(--ln);border-radius:8px;font:600 1rem system-ui;text-align:center}',
+    '.calc input:focus{outline:2px solid #c5d0fa;border-color:var(--pri)}',
+    '#out{margin-top:12px;padding:14px;border-radius:12px;background:#f1f5ff;font:1rem/1.7 Georgia,serif;min-height:52px}',
+    '.band{background:linear-gradient(135deg,var(--pri),#5f3dc4);color:#fff;border-radius:22px;padding:40px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap}',
+    '.band h2{margin:0 0 6px}.band p{margin:0;opacity:.9}',
+    '.band .btn{background:#fff;color:var(--pri)}',
+    'footer{background:#fff;border-top:1px solid var(--ln);padding:36px 0;color:var(--mut);font-size:.9rem}',
+    'footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:16px}',
+    'footer a{margin-right:16px}footer a:hover{color:var(--pri)}',
+    '@media(max-width:860px){.hero .wrap,.two{grid-template-columns:1fr}.hero .wrap{padding-top:40px;padding-bottom:40px}',
+    'nav{display:none;position:absolute;top:64px;left:0;right:0;flex-direction:column;background:#fff;border-bottom:1px solid var(--ln);padding:10px 20px;margin:0}',
+    'nav.open{display:flex}.burger{display:block}.hide-s{display:none}.band{padding:28px}}'
+  ].join('');
+  var fav="data:image/svg+xml,"+encodeURIComponent("<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='#3b5bdb'/><text x='16' y='23' font-size='20' text-anchor='middle' fill='#fff' font-style='italic' font-family='Georgia,serif' font-weight='700'>&#960;</text></svg>");
+  var body=[
+    '<header><div class="wrap bar">',
+    '<a class="logo" href="#top"><i>&pi;</i>Mathly</a>',
+    '<nav id="nav"><a href="#topics">Algebra</a><a href="#topics">Geometry</a><a href="#topics">Calculus</a><a href="#topics">Statistics</a><a href="#practice">Practice</a><a href="#about">About</a></nav>',
+    '<button class="btn p hide-s" data-fs>Open in Full Screen</button>',
+    '<button class="burger" id="burger" aria-label="Menu">&#9776;</button>',
+    '</div></header>',
+    '<main id="top">',
+    '<section class="hero"><div class="wrap"><div>',
+    '<span class="tag">Free lessons &middot; Grades 6&ndash;12 &amp; College</span>',
+    '<h1>Understand math, one clear step at a time.</h1>',
+    '<p class="lead">Bite-sized lessons, worked examples and practice problems that build real intuition &mdash; from fractions to differential equations.</p>',
+    '<div class="cta"><button class="btn p" data-fs>Open in Full Screen</button><a class="btn o" href="#topics">Browse topics</a></div>',
+    '<div class="stats"><div><b>1,200+</b>video lessons</div><div><b>40k</b>practice problems</div><div><b>2M</b>learners</div></div>',
+    '</div><div class="board"><small>Worked example</small>',
+    '<div class="eq">Solve &nbsp;<b>x&sup2; &minus; 5x + 6 = 0</b></div>',
+    '<div class="step"><em>1</em><div>Factor the quadratic: <i>(x &minus; 2)(x &minus; 3) = 0</i></div></div>',
+    '<div class="step"><em>2</em><div>Set each factor to zero: <i>x &minus; 2 = 0</i> or <i>x &minus; 3 = 0</i></div></div>',
+    '<div class="step"><em>3</em><div>Solutions: <b><i>x = 2</i></b> and <b><i>x = 3</i></b></div></div>',
+    '</div></div></section>',
+    '<section class="s" id="topics"><div class="wrap"><h2>Explore by topic</h2><p class="sub">Pick a subject and follow a guided path, or jump straight to the concept you need.</p><div class="grid">',
+    '<div class="card"><div class="ico" style="background:#3b5bdb">x</div><h3>Algebra</h3><p>Equations, inequalities, functions, polynomials and systems.</p><a href="#practice">Start learning &rarr;</a></div>',
+    '<div class="card"><div class="ico" style="background:#12b886">&#9651;</div><h3>Geometry</h3><p>Angles, triangles, circles, area, volume and proofs.</p><a href="#practice">Start learning &rarr;</a></div>',
+    '<div class="card"><div class="ico" style="background:#7048e8">&int;</div><h3>Calculus</h3><p>Limits, derivatives, integrals and series with visual intuition.</p><a href="#practice">Start learning &rarr;</a></div>',
+    '<div class="card"><div class="ico" style="background:#f59f00">&sigma;</div><h3>Statistics</h3><p>Data, probability, distributions and hypothesis testing.</p><a href="#practice">Start learning &rarr;</a></div>',
+    '</div></div></section>',
+    '<section class="s" id="practice" style="padding-top:0"><div class="wrap two">',
+    '<div class="panel"><h3>Key formulas</h3><p class="sub" style="margin-bottom:10px">A quick reference you can bookmark.</p>',
+    '<div class="eq">Quadratic formula &nbsp; <i>x</i> = <span class="frac"><span>&minus;<i>b</i> &plusmn; &radic;(<i>b</i>&sup2; &minus; 4<i>ac</i>)</span><span>2<i>a</i></span></span></div>',
+    '<div class="eq">Pythagorean theorem &nbsp; <i>a</i>&sup2; + <i>b</i>&sup2; = <i>c</i>&sup2;</div>',
+    '<div class="eq">Derivative of a power &nbsp; <span class="frac"><span><i>d</i></span><span><i>dx</i></span></span> <i>x<sup>n</sup></i> = <i>n x<sup>n&minus;1</sup></i></div>',
+    '<div class="eq">Area of a circle &nbsp; <i>A</i> = &pi;<i>r</i>&sup2;</div></div>',
+    '<div class="panel calc"><h3>Quadratic solver</h3><p class="sub" style="margin-bottom:14px">Enter coefficients for <i>ax</i>&sup2; + <i>bx</i> + <i>c</i> = 0.</p>',
+    '<label>a <input id="qa" type="number" value="1"></label><label>b <input id="qb" type="number" value="-5"></label><label>c <input id="qc" type="number" value="6"></label>',
+    '<div><button class="btn p" id="solve" type="button">Solve</button></div><div id="out" aria-live="polite">Press Solve to see the roots.</div></div>',
+    '</div></section>',
+    '<section class="s" id="about" style="padding-top:0"><div class="wrap"><div class="band"><div><h2>Learn anywhere, on any device</h2><p>Your progress is saved automatically. Switch to full screen for a distraction-free workspace.</p></div><button class="btn" data-fs>Open in Full Screen</button></div></div></section>',
+    '</main>',
+    '<footer><div class="wrap"><div><b style="color:var(--ink)">Mathly</b> &copy; 2026 &middot; Free math education for everyone.</div><div><a href="#top">Privacy</a><a href="#top">Terms</a><a href="#top">Teachers</a><a href="#top">Contact</a></div></div></footer>'
+  ].join('');
+  var js=[
+    'var APP='+JSON.stringify(appSrc).replace(/</g,'\\u003c').replace(/\u2028/g,'\\u2028').replace(/\u2029/g,'\\u2029')+';',
+    'var ALLOW="fullscreen; autoplay; clipboard-write; gamepad; microphone; camera; pointer-lock; keyboard-map";',
+    'var started=false;',
+    'function openApp(){',
+    ' if(started)return;started=true;',
+    ' var f=document.createElement("iframe");f.id="astraFrame";f.setAttribute("allow",ALLOW);f.setAttribute("allowfullscreen","");',
+    ' f.style.cssText="position:fixed;top:0;left:0;width:100%;height:100%;border:0;background:#000;z-index:2147483647";',
+    ' f.srcdoc=APP;',
+    ' var h=document.querySelectorAll("header,main,footer");for(var i=0;i<h.length;i++)h[i].style.display="none";',
+    ' document.documentElement.style.overflow="hidden";document.body.style.background="#000";',
+    ' document.body.appendChild(f);',
+    ' try{var r=document.documentElement.requestFullscreen&&document.documentElement.requestFullscreen();if(r&&r.catch)r.catch(function(){})}catch(e){}',
+    ' f.addEventListener("load",function(){try{f.contentWindow.focus()}catch(e){}});',
+    '}',
+    'var b=document.querySelectorAll("[data-fs]");for(var i=0;i<b.length;i++)b[i].addEventListener("click",openApp);',
+    'document.getElementById("burger").onclick=function(){document.getElementById("nav").classList.toggle("open")};',
+    'var nl=document.querySelectorAll("#nav a");for(var j=0;j<nl.length;j++)nl[j].addEventListener("click",function(){document.getElementById("nav").classList.remove("open")});',
+    'function fmt(n){return String(Math.round(n*10000)/10000)}',
+    'document.getElementById("solve").onclick=function(){',
+    ' var a=parseFloat(document.getElementById("qa").value),b=parseFloat(document.getElementById("qb").value),c=parseFloat(document.getElementById("qc").value),o=document.getElementById("out");',
+    ' if(isNaN(a)||isNaN(b)||isNaN(c)){o.textContent="Please enter numbers for a, b and c.";return}',
+    ' if(a===0){o.textContent=b===0?"This is not an equation in x.":"Linear equation: x = "+fmt(-c/b);return}',
+    ' var d=b*b-4*a*c;',
+    ' if(d>0){o.innerHTML="Discriminant = "+fmt(d)+" &gt; 0<br>Two real roots: <b>x\\u2081 = "+fmt((-b+Math.sqrt(d))/(2*a))+"</b>, <b>x\\u2082 = "+fmt((-b-Math.sqrt(d))/(2*a))+"</b>"}',
+    ' else if(d===0){o.innerHTML="Discriminant = 0<br>One repeated root: <b>x = "+fmt(-b/(2*a))+"</b>"}',
+    ' else{o.innerHTML="Discriminant = "+fmt(d)+" &lt; 0<br>Complex roots: <b>"+fmt(-b/(2*a))+" \\u00b1 "+fmt(Math.sqrt(-d)/(2*a>0?2*a:-2*a))+"i</b>"}',
+    '};'
+  ].join('\n');
+  return '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">'
+    +'<title>Mathly \u2013 Learn Algebra, Geometry &amp; Calculus</title><link id="fav" rel="icon" href="'+fav+'">'
+    +'<style>'+css+'</style></head><body>'+body+'<'+S+'>'+js+'<\/'+S+'></body></html>';
+}
 
 function launcher(){
-  $('launch').hidden=false;var note=$('note'),btn=$('launchBtn'),here=$('hereBtn');
-  function inPage(){$('launch').hidden=true;window.name='astra-app';app()}
-  here.onclick=inPage;
+  var note=$('note'),btn=$('launchBtn');
+  $('launch').hidden=false;$('app').hidden=true;
   btn.onclick=function(){
+    note.textContent='';
     var w=null;
-    try{w=window.open('about:blank','_blank','popup=yes,width=1280,height=720,left='+Math.max(0,(screen.width-1280)/2)+',top='+Math.max(0,(screen.height-720)/2))}catch(e){}
-    if(!w||w.closed){note.textContent='The pop-up was blocked (code editors and previews often do this). Allow pop-ups, open this file in its own browser tab, or use the button below.';here.hidden=false;return}
-    try{w.name='astra-app';w.document.open();w.document.write(SRC.replace('<head>','<head><script>window.__ASTRA=1<\/script>'));w.document.close()}
-    catch(e){try{w.close()}catch(_){}note.textContent='Couldn\u2019t start the window. Try again, or use the button below.';here.hidden=false;return}
-    note.textContent='Astra is open in its own window.';btn.textContent='Reopen Astra';
+    try{w=window.open('about:blank','_blank')}catch(e){}
+    if(!w||w.closed){note.textContent='Pop-up blocked. Allow pop-ups for this page, then press Launch again.';return}
+    try{
+      var src=SRC.replace('<head>',function(){return '<head><script>window.__ASTRA=1<\/script>'});
+      w.document.open();w.document.write(mathSite(src));w.document.close();
+    }catch(e){
+      try{w.close()}catch(_){}
+      note.textContent='Couldn\u2019t start the new tab. Please try again.';
+    }
   };
 }
 
@@ -612,8 +772,9 @@ function app(){
   };
   $('rl').onclick=function(){var t=tabs[cur];if(!t){toast('Nothing to reload');return}var s=t.url;t.f.src='about:blank';setTimeout(function(){t.f.src=s},50);closeMenu()};
   $('fs').onclick=function(){
-    if(document.fullscreenElement)document.exitFullscreen();
-    else if(document.documentElement.requestFullscreen)document.documentElement.requestFullscreen().catch(function(){toast('Fullscreen isn\u2019t available here')});
+    var D=topDoc(),de=D.documentElement;
+    if(D.fullscreenElement||document.fullscreenElement){(D.fullscreenElement?D:document).exitFullscreen()}
+    else if(de.requestFullscreen)de.requestFullscreen().catch(function(){toast('Fullscreen isn\u2019t available here')});
   };
   $('bSet').onclick=function(){setView=!setView;renderMenu()};
   function renderMenu(){
@@ -809,7 +970,7 @@ function app(){
     var f=el('div','foot'),t=el('button','chip','Replay tutorial'),g=el('button','chip','CloudMoon guide'),dn=el('button','chip','Back');
     t.onclick=function(){closeMenu();run(tutSteps())};g.onclick=function(){closeMenu();run(cloudSteps())};dn.onclick=function(){setView=false;renderMenu()};
     f.append(t,g,dn);c.appendChild(f);
-    var q=el('button','danger','Close Astra');q.onclick=function(){window.close()};c.appendChild(q);
+    var q=el('button','danger','Close Astra');q.onclick=function(){try{window.parent.close()}catch(e){}window.close()};c.appendChild(q);
     c.appendChild(el('p','hint','Settings stay on this device. Astra doesn\u2019t track you or log what you open.'));kick();
   }
 
