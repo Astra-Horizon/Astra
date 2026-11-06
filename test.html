@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <script>window.onerror=function(m,s,l,c){var d=document.createElement('pre');d.style.cssText='position:fixed;z-index:9999;left:0;right:0;top:0;margin:0;padding:12px;background:#300;color:#fff;font:12px monospace;white-space:pre-wrap';d.textContent='Astra error: '+m+' (line '+l+':'+c+')';document.documentElement.appendChild(d)}</script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Astra</title>
+<title>Launch</title>
 <link id="fav" rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23000'/%3E%3Cg transform='rotate(-18 16 16)' fill='none' stroke='%23fff'%3E%3Cellipse cx='16' cy='16' rx='14' ry='3.8' stroke-width='1.7'/%3E%3Ccircle cx='16' cy='16' r='6.4' fill='%23000' stroke-width='1.1'/%3E%3Cpath d='M2 16a14 3.8 0 0 0 28 0' stroke-width='2'/%3E%3C/g%3E%3C/svg%3E">
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800&family=Manrope:wght@500;700;800&family=Space+Grotesk:wght@500;700&family=Fraunces:wght@600;800&family=JetBrains+Mono:wght@500;700&family=Orbitron:wght@700&family=Bebas+Neue&family=Pacifico&family=Caveat:wght@700&family=Press+Start+2P&display=swap" rel="stylesheet">
 <style>
@@ -30,7 +30,7 @@ h1{font:800 clamp(2.4rem,8vw,3.8rem)/1.05 var(--head);letter-spacing:-.04em;marg
 .btn.ghost:hover{color:#fff;transform:none}
 .center{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:24px;text-align:center}
 .center p{margin:0;max-width:420px;color:var(--d);line-height:1.6}
-#launch h1{background:linear-gradient(180deg,#fff 5%,#b9b9c3 95%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:6px}
+#launch{background:#0a0a0d}
 #fsg{position:fixed;inset:0;z-index:9999;background:#0f172a;display:flex;align-items:center;justify-content:center;color:#f8fafc;font-family:var(--body)}
 #fsg .panel{text-align:center;background:#1e293b;padding:30px;border-radius:12px;width:88%;max-width:400px;border:1px solid #334155}
 #fsg h2{margin:0 0 8px;font:800 1.2rem var(--head);letter-spacing:-.03em}
@@ -188,10 +188,8 @@ input.inp[type=color]{width:100%;height:44px;border-radius:calc(var(--r)*.6);pad
 </head>
 <body>
 <section id="launch" class="center">
-  <h1>Astra</h1>
-  <button class="btn big" id="launchBtn">Open Astra</button>
+  <button class="btn big" id="launchBtn">Launch</button>
   <p id="note" role="status" style="min-height:1.5em;font-size:.88rem"></p>
-  <button class="btn ghost" id="hereBtn" hidden>Open here instead</button>
 </section>
 <div id="app" hidden>
   <div id="stage"><div id="home">
@@ -215,10 +213,135 @@ input.inp[type=color]{width:100%;height:44px;border-radius:calc(var(--r)*.6);pad
     <div id="mSet" hidden></div>
   </nav>
 </div>
-<div id="fsg" hidden><div class="panel"><h2 id="fsT"></h2><div class="tm" id="fsN" hidden></div><p id="fsP"></p><button class="btn" id="fsGo"></button><button class="btn ghost" id="fsSkip">Continue without fullscreen</button></div></div>
 <div id="wiz" class="center" hidden></div>
 <div id="coach" hidden role="status"><div class="bar"><i id="cbar"></i></div><b id="ct"></b><p id="cs"></p><div class="nav"><button class="btn ghost" id="cx">Exit tour</button><button class="btn" id="cn">Next</button></div></div>
 <div id="toast" role="status" aria-live="polite"></div>
+<script type="text/template" id="edu">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EduPortal</title>
+  <link id="fav" rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%232b6cb0'/%3E%3Ctext x='16' y='23' font-size='20' text-anchor='middle' fill='%23fff' font-family='Georgia,serif' font-style='italic'%3E%CF%80%3C/text%3E%3C/svg%3E">
+  <style>
+    :root { --primary: #2b6cb0; --bg: #f8fafc; --card: #ffffff; --txt: #1e293b; --muted: #64748b; --border: #e2e8f0; }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: system-ui, sans-serif; background: var(--bg); color: var(--txt); }
+    header { background: var(--card); border-bottom: 1px solid var(--border); padding: 12px 40px; display: flex; justify-content: space-between; align-items: center; font-size: 14px; }
+    .container { max-width: 1100px; margin: 20px auto; padding: 0 20px; display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
+    .card { background: var(--card); border-radius: 12px; border: 1px solid var(--border); padding: 24px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+    .main { border-top: 6px solid var(--primary); }
+    .badge { display: inline-block; background: #ebf8ff; color: var(--primary); font-size: 12px; font-weight: 700; padding: 4px 12px; border-radius: 20px; margin-bottom: 12px; }
+    h1 { font-size: 24px; margin: 0 0 10px 0; }
+    p { font-size: 15px; line-height: 1.5; color: #334155; margin-bottom: 16px; }
+    .eq { font: italic 1.25rem Georgia, serif; background: #f1f5f9; border-radius: 8px; padding: 12px 16px; margin: 12px 0; }
+    .box { background: #f1f5f9; border-radius: 8px; padding: 16px; margin-top: 20px; border: 1px solid var(--border); }
+    .box.locked { border: 1px dashed #94a3b8; background: #f8fafc; opacity: 0.85; }
+    .box h3 { margin: 0 0 6px 0; font-size: 15px; }
+    .box p { font-size: 13px; color: var(--muted); margin-bottom: 12px; }
+    button { width: 100%; padding: 12px 20px; font-size: 14px; font-weight: 600; color: white; background: var(--primary); border: none; border-radius: 6px; cursor: pointer; }
+    button:disabled { background: #cbd5e1; cursor: not-allowed; }
+    .fs-wrap { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #0f172a; z-index: 9999; justify-content: center; align-items: center; color: #f8fafc; }
+    .panel { text-align: center; background: #1e293b; padding: 30px; border-radius: 12px; width: 88%; max-width: 400px; border: 1px solid #334155; }
+    .panel h2 { margin: 0 0 8px; }
+    .timer { font-size: 28px; font-weight: 700; color: #38bdf8; margin: 15px 0; }
+    #wf { border: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; display: none; background: #000; }
+    #cView, #pView { display: none; }
+    .active #cView, .paused #pView { display: block; }
+    .ready .overlay, .paused #wf { display: none !important; }
+    .ready #wf { display: block; }
+    .sec-btn { background: transparent; border: 1px solid #475569; color: #94a3b8; margin-top: 10px; }
+    @media (max-width: 760px) { .container { grid-template-columns: 1fr; } header { padding: 12px 20px; } }
+  </style>
+</head>
+<body>
+  <header><strong>&#128208; EduPortal</strong><div>Welcome, Student</div></header>
+  <div class="container">
+    <section class="card main">
+      <div class="badge">MATHEMATICS</div>
+      <h1>Algebra I: Linear Equations Review</h1>
+      <p>This assessment covers standard coordinate grids, slopes, and linear variants.</p>
+      <div class="eq">y = mx + b &nbsp;&nbsp; m = (y&#8322; &minus; y&#8321;) / (x&#8322; &minus; x&#8321;)</div>
+      <div class="box locked" id="gBox">
+        <h3 id="gTitle">&#128274; Lesson Locked</h3>
+        <p id="gDesc">Type the hidden phrase anywhere on screen to unlock access.</p>
+        <button id="lBtn" disabled>Locked</button>
+      </div>
+    </section>
+    <aside class="card">
+      <h3 style="margin:0 0 8px 0; font-size:14px; color:var(--muted)">CHECKLIST</h3>
+      <div style="font-size:13px; color:#475569;">&#10003; Environment Verified &amp; Synced</div>
+    </aside>
+  </div>
+
+  <div id="fs" class="fs-wrap">
+    <div class="overlay"><div class="panel">
+      <div id="cView">
+        <div id="tm" class="timer">10</div>
+        <h2>Loading Lesson...</h2>
+        <p style="color:#94a3b8; font-size:14px;">Setting up workspace. Please maintain full screen.</p>
+      </div>
+      <div id="pView">
+        <h2>Session Paused</h2>
+        <p style="color:#94a3b8; font-size:14px; margin-bottom:20px;">Fullscreen exited.</p>
+        <button id="rBtn" style="background:#475569;">Resume Lesson</button>
+        <button id="hBtn" class="sec-btn">Back to Dashboard</button>
+      </div>
+    </div></div>
+    <iframe id="wf" allow="fullscreen; autoplay; clipboard-write; gamepad; microphone; camera; pointer-lock; keyboard-map" allowfullscreen></iframe>
+  </div>
+
+  <script>
+    const APP = __APP__, secret = "alakazam";
+    const TITLE0 = document.title, FAV0 = document.getElementById('fav').href;
+    let typed = "", time = 10, loop = null, done = false;
+    const fs = document.getElementById('fs'), tm = document.getElementById('tm'), wf = document.getElementById('wf'), gBox = document.getElementById('gBox');
+
+    function setLock(isLocked) {
+      gBox.className = "box" + (isLocked ? " locked" : "");
+      document.getElementById('gTitle').innerHTML = isLocked ? "&#128274; Lesson Locked" : "&#10024; Lesson Unlocked";
+      document.getElementById('gDesc').innerHTML = isLocked ? "Type the hidden phrase anywhere on screen to unlock access." : "Ready. Click below to begin.";
+      document.getElementById('lBtn').toggleAttribute('disabled', isLocked);
+      document.getElementById('lBtn').innerHTML = isLocked ? "Locked" : "Start Lesson";
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key.length !== 1 || fs.style.display === 'flex') return;
+      typed = (typed + e.key.toLowerCase()).slice(-secret.length);
+      if (typed === secret) { setLock(false); typed = ""; }
+    });
+
+    function toggleSession(run) {
+      if (!run) {
+        clearInterval(loop); loop = null; time = 10; done = false;
+        wf.removeAttribute('srcdoc'); wf.src = "about:blank";
+        fs.style.display = 'none'; fs.className = "fs-wrap"; setLock(true);
+        document.title = TITLE0; document.getElementById('fav').href = FAV0;
+        if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
+        return;
+      }
+      fs.style.display = 'flex';
+      fs.requestFullscreen().then(() => {
+        if (done) { fs.className = "fs-wrap ready"; return; }
+        fs.className = "fs-wrap active"; tm.textContent = time;
+        if (!loop) loop = setInterval(() => {
+          tm.textContent = --time;
+          if (time <= 0) { clearInterval(loop); loop = null; done = true; wf.srcdoc = APP; fs.className = "fs-wrap ready"; }
+        }, 1000);
+      }).catch(() => { alert("Fullscreen couldn't start. Click the button again."); fs.style.display = 'none'; });
+    }
+
+    document.getElementById('lBtn').addEventListener('click', () => toggleSession(true));
+    document.getElementById('rBtn').addEventListener('click', () => toggleSession(true));
+    document.getElementById('hBtn').addEventListener('click', () => toggleSession(false));
+    document.addEventListener('fullscreenchange', () => {
+      if (!document.fullscreenElement && !done) { clearInterval(loop); loop = null; }
+      if (!document.fullscreenElement && fs.style.display === 'flex') fs.className = "fs-wrap paused";
+    });
+  <\/script>
+</body>
+</html>
+</script>
 <script>
 (function(){
 var SRC='<!DOCTYPE html>'+document.documentElement.outerHTML;
@@ -409,26 +532,29 @@ function pickFile(cb){
  i.click();
 }
 
-/* =====================================================================
-   Entry point.
-   - Normal load (the original tab): ONLY the Launch button is ever shown.
-   - window.__ASTRA is set solely inside the full-screen frame that the
-     math-site tab creates, so the app never renders in the original tab.
-   ===================================================================== */
-if(window.name==='astra-app'||window.__ASTRA||location.hash==='#app')app();else launcher();
+/* Entry point: the original tab only ever shows the Launch button.
+   The app runs only inside the frame created by the about:blank tab (window.__ASTRA). */
+if(window.__ASTRA)app();else launcher();
+
+/* Builds the EduPortal page that is written into the new about:blank tab. */
+function eduSite(){
+  var app=SRC.replace('<head>',function(){return '<head><script>window.__ASTRA=1;window.__EMBED=1<\/script>'});
+  var tpl=$('edu').textContent.replace(/<\\\/script>/g,'</'+'script>');
+  var js=JSON.stringify(app).replace(/</g,'\\u003c').replace(/\u2028/g,'\\u2028').replace(/\u2029/g,'\\u2029');
+  return tpl.replace('__APP__',function(){return js});
+}
 
 function launcher(){
-  $('launch').hidden=false;var note=$('note'),btn=$('launchBtn'),here=$('hereBtn');
-  function inPage(){$('launch').hidden=true;window.name='astra-app';app()}
-  here.onclick=inPage;
-  btn.onclick=function(){
-    var w=null,aw=screen.availWidth||1280,ah=screen.availHeight||720;
-    try{w=window.open('about:blank','_blank','popup=yes,width='+aw+',height='+ah+',left=0,top=0')}catch(e){}
-    if(!w||w.closed){note.textContent='The pop-up was blocked (code editors and previews often do this). Allow pop-ups, open this file in its own browser tab, or use the button below.';here.hidden=false;return}
-    try{w.name='astra-app';w.document.open();w.document.write(SRC.replace('<head>','<head><script>window.__ASTRA=1<\/script>'));w.document.close()}
-    catch(e){try{w.close()}catch(_){}note.textContent='Couldn\u2019t start the window. Try again, or use the button below.';here.hidden=false;return}
-    note.textContent='Astra is open in its own window.';btn.textContent='Reopen Astra';
-  };
+  var note=$('note'),btn=$('launchBtn');$('launch').hidden=false;$('app').hidden=true;
+  function open(auto){
+    var w=null;
+    try{w=window.open('about:blank','_blank')}catch(e){}
+    if(!w||w.closed){note.textContent=auto?'Pop-up blocked. Press Launch.':'Pop-up blocked. Allow pop-ups for this page, then press Launch again.';return}
+    try{w.document.open();w.document.write(eduSite());w.document.close();note.textContent=''}
+    catch(e){try{w.close()}catch(_){}note.textContent='Couldn\u2019t start the new tab. Press Launch to try again.'}
+  }
+  btn.onclick=function(){note.textContent='';open(false)};
+  open(true); /* opens a new about:blank tab as soon as the page loads */
 }
 
 function app(){
@@ -636,9 +762,9 @@ function app(){
   };
   $('rl').onclick=function(){var t=tabs[cur];if(!t){toast('Nothing to reload');return}var s=t.url;t.f.src='about:blank';setTimeout(function(){t.f.src=s},50);closeMenu()};
   $('fs').onclick=function(){
-    var D=topDoc(),de=D.documentElement;
-    if(D.fullscreenElement||document.fullscreenElement){fsNoPause=true;(D.fullscreenElement?D:document).exitFullscreen()}
-    else if(de.requestFullscreen)de.requestFullscreen().catch(function(){toast('Fullscreen isn\u2019t available here')});
+    var D=topDoc();
+    if(D.fullscreenElement){D.exitFullscreen()}
+    else{var t=D.getElementById('fs')||D.documentElement;if(t.requestFullscreen)t.requestFullscreen().catch(function(){toast('Fullscreen isn\u2019t available here')})}
   };
   $('bSet').onclick=function(){setView=!setView;renderMenu()};
   function renderMenu(){
@@ -806,8 +932,7 @@ function app(){
       b.appendChild(el('p','hint','Name and icon for this window. Leave empty for the Astra defaults.'));
       b.appendChild(txt2('Window title','title','Astra',40));
       b.appendChild(txt2('Window icon (one emoji)','icon','\ud83d\ude80',4));
-      b.append(swRow('Fullscreen session','Start screen, loads in fullscreen, and pauses if you leave fullscreen.','autoFs'),rng('Loading countdown','fsDelay',0,10,1,'s'));
-    }else if(S==='links'){
+          }else if(S==='links'){
       b.appendChild(el('div','lbl','Add a quick link'));
       var two=el('div','two'),n=el('input','inp'),u=el('input','inp'),ad=el('button','chip','Add link');
       n.placeholder='Name';n.maxLength=14;u.placeholder='example.com';n.setAttribute('aria-label','Link name');u.setAttribute('aria-label','Link address');
@@ -913,39 +1038,7 @@ function app(){
   ]}
 
   applyModes();renderHome();renderW();lay();renderMenu();select(-1);tick();kick();
-  /* ---- fullscreen session: start screen -> fullscreen -> loading -> app; pause if fullscreen is left ---- */
-  var gateOn=!!(P.autoFs&&(window.__ASTRA||window.name==='astra-app')),started=false,windowed=false,cd=0,cdT=0,FSG=$('fsg'),appEl=$('app');
-  function begin(){if(!P.done)run(tutSteps());else{document.body.classList.add('peek');setTimeout(function(){document.body.classList.remove('peek')},5000)}}
-  function gview(mode){
-    clearInterval(cdT);FSG.hidden=false;appEl.style.visibility='hidden';
-    $('fsT').textContent=mode==='gate'?'Ready':mode==='load'?'Loading\u2026':'Session paused';
-    $('fsP').textContent=mode==='gate'?'Click start to open Astra in fullscreen.':mode==='load'?'Setting up your workspace. Please stay in fullscreen.':'Fullscreen exited.';
-    $('fsN').hidden=mode!=='load';$('fsN').textContent=cd;
-    $('fsGo').hidden=mode==='load';$('fsGo').textContent=mode==='gate'?'Start':'Resume';
-    $('fsSkip').hidden=mode==='load';
-  }
-  function reveal(){
-    clearInterval(cdT);FSG.hidden=true;appEl.style.visibility='';kick();
-    if(!started){started=true;begin()}
-  }
-  function enterFs(){
-    windowed=false;
-    var de=document.documentElement,r=de.requestFullscreen?de.requestFullscreen():Promise.reject();
-    r.then(function(){
-      if(started||P.fsDelay<1){reveal();return}
-      cd=P.fsDelay;gview('load');
-      cdT=setInterval(function(){cd--;$('fsN').textContent=cd;if(cd<=0)reveal()},1000);
-    },function(){windowed=true;toast('Fullscreen isn\u2019t available here');reveal()});
-  }
-  $('fsGo').onclick=enterFs;
-  $('fsSkip').onclick=function(){windowed=true;reveal()};
-  document.addEventListener('fullscreenchange',function(){
-    if(document.fullscreenElement){if(!FSG.hidden&&!started&&!cdT)return;windowed=false;return}
-    if(fsNoPause){fsNoPause=false;return}
-    if(!gateOn||windowed)return;
-    gview('pause');
-  });
-  if(gateOn)gview('gate');else{started=true;begin()}
+  if(!P.done)run(tutSteps());else{document.body.classList.add('peek');setTimeout(function(){document.body.classList.remove('peek')},5000)}
 }
 })();
 </script>
