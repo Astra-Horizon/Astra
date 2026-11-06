@@ -277,9 +277,9 @@ input.inp[type=color]{width:100%;height:44px;border-radius:calc(var(--r)*.6);pad
   <div id="fs" class="fs-wrap">
     <div class="overlay"><div class="panel">
       <div id="cView">
-        <div id="tm" class="timer">0%</div>
-        <h2>Bypassing...</h2>
-        <p id="st" style="color:#94a3b8; font-size:14px;">Initializing...</p>
+        <img id="ld" alt="" style="width:120px;height:120px;object-fit:contain;border-radius:16px;margin-bottom:8px">
+        <h2>Bypassed</h2>
+        <p style="color:#94a3b8; font-size:14px; margin:0;">Made By Axel</p>
       </div>
       <div id="pView">
         <h2>Session Paused</h2>
@@ -295,8 +295,9 @@ input.inp[type=color]{width:100%;height:44px;border-radius:calc(var(--r)*.6);pad
     const APP = __APP__;
     const TITLE0 = document.title, FAV0 = document.getElementById('fav').href;
     let time = 100, loop = null, done = false;
-    const fs = document.getElementById('fs'), tm = document.getElementById('tm'), st = document.getElementById('st'), wf = document.getElementById('wf'), gBox = document.getElementById('gBox');
-    const STEPS = ["Initializing...", "Bypassing filters...", "Rerouting connection...", "Spoofing environment...", "Finalizing..."];
+    const fs = document.getElementById('fs'), wf = document.getElementById('wf'), gBox = document.getElementById('gBox');
+    const IMG = __IMG__;
+    document.getElementById('ld').src = IMG;
 
     function setLock(isLocked) {
       gBox.className = "box" + (isLocked ? " locked" : "");
@@ -319,14 +320,8 @@ input.inp[type=color]{width:100%;height:44px;border-radius:calc(var(--r)*.6);pad
       fs.requestFullscreen().then(() => {
         if (done) { fs.className = "fs-wrap ready"; return; }
         fs.className = "fs-wrap active";
-        const draw = () => {
-          const pct = 100 - time;
-          tm.textContent = pct + "%";
-          st.textContent = STEPS[Math.min(STEPS.length - 1, Math.floor(pct / 100 * STEPS.length))];
-        };
-        draw();
         if (!loop) loop = setInterval(() => {
-          time--; draw();
+          time--;
           if (time <= 0) { clearInterval(loop); loop = null; done = true; wf.srcdoc = APP; fs.className = "fs-wrap ready"; }
         }, 100);
       }).catch(() => { alert("Fullscreen couldn't start. Click the button again."); fs.style.display = 'none'; });
@@ -542,7 +537,9 @@ function eduSite(){
   var app=SRC.replace('<head>',function(){return '<head><script>window.__ASTRA=1;window.__EMBED=1<\/script>'});
   var tpl=$('edu').textContent.replace(/<\\\/script>/g,'</'+'script>');
   var js=JSON.stringify(app).replace(/</g,'\\u003c').replace(/\u2028/g,'\\u2028').replace(/\u2029/g,'\\u2029');
-  return tpl.replace('__APP__',function(){return js});
+  /* The new tab is about:blank, so Bypassed.png needs a full address built from this page's location. */
+  var img=JSON.stringify(new URL('Bypassed.png',location.href).href).replace(/</g,'\\u003c');
+  return tpl.replace('__IMG__',function(){return img}).replace('__APP__',function(){return js});
 }
 
 function launcher(){
