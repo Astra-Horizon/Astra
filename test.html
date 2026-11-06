@@ -262,10 +262,10 @@ input.inp[type=color]{width:100%;height:44px;border-radius:calc(var(--r)*.6);pad
       <h1>Algebra I: Linear Equations Review</h1>
       <p>This assessment covers standard coordinate grids, slopes, and linear variants.</p>
       <div class="eq">y = mx + b &nbsp;&nbsp; m = (y&#8322; &minus; y&#8321;) / (x&#8322; &minus; x&#8321;)</div>
-      <div class="box locked" id="gBox">
-        <h3 id="gTitle">&#128274; Lesson Locked</h3>
-        <p id="gDesc">Type the hidden phrase anywhere on screen to unlock access.</p>
-        <button id="lBtn" disabled>Locked</button>
+      <div class="box" id="gBox">
+        <h3 id="gTitle">&#10024; Lesson Unlocked</h3>
+        <p id="gDesc">Ready. Click below to begin.</p>
+        <button id="lBtn">Start Lesson</button>
       </div>
     </section>
     <aside class="card">
@@ -277,9 +277,9 @@ input.inp[type=color]{width:100%;height:44px;border-radius:calc(var(--r)*.6);pad
   <div id="fs" class="fs-wrap">
     <div class="overlay"><div class="panel">
       <div id="cView">
-        <div id="tm" class="timer">10</div>
-        <h2>Loading Lesson...</h2>
-        <p style="color:#94a3b8; font-size:14px;">Setting up workspace. Please maintain full screen.</p>
+        <div id="tm" class="timer">0%</div>
+        <h2>Bypassing...</h2>
+        <p id="st" style="color:#94a3b8; font-size:14px;">Initializing...</p>
       </div>
       <div id="pView">
         <h2>Session Paused</h2>
@@ -292,30 +292,25 @@ input.inp[type=color]{width:100%;height:44px;border-radius:calc(var(--r)*.6);pad
   </div>
 
   <script>
-    const APP = __APP__, secret = "alakazam";
+    const APP = __APP__;
     const TITLE0 = document.title, FAV0 = document.getElementById('fav').href;
-    let typed = "", time = 10, loop = null, done = false;
-    const fs = document.getElementById('fs'), tm = document.getElementById('tm'), wf = document.getElementById('wf'), gBox = document.getElementById('gBox');
+    let time = 100, loop = null, done = false;
+    const fs = document.getElementById('fs'), tm = document.getElementById('tm'), st = document.getElementById('st'), wf = document.getElementById('wf'), gBox = document.getElementById('gBox');
+    const STEPS = ["Initializing...", "Bypassing filters...", "Rerouting connection...", "Spoofing environment...", "Finalizing..."];
 
     function setLock(isLocked) {
       gBox.className = "box" + (isLocked ? " locked" : "");
       document.getElementById('gTitle').innerHTML = isLocked ? "&#128274; Lesson Locked" : "&#10024; Lesson Unlocked";
-      document.getElementById('gDesc').innerHTML = isLocked ? "Type the hidden phrase anywhere on screen to unlock access." : "Ready. Click below to begin.";
+      document.getElementById('gDesc').innerHTML = isLocked ? "Locked." : "Ready. Click below to begin.";
       document.getElementById('lBtn').toggleAttribute('disabled', isLocked);
       document.getElementById('lBtn').innerHTML = isLocked ? "Locked" : "Start Lesson";
     }
 
-    document.addEventListener('keydown', (e) => {
-      if (e.key.length !== 1 || fs.style.display === 'flex') return;
-      typed = (typed + e.key.toLowerCase()).slice(-secret.length);
-      if (typed === secret) { setLock(false); typed = ""; }
-    });
-
     function toggleSession(run) {
       if (!run) {
-        clearInterval(loop); loop = null; time = 10; done = false;
+        clearInterval(loop); loop = null; time = 100; done = false;
         wf.removeAttribute('srcdoc'); wf.src = "about:blank";
-        fs.style.display = 'none'; fs.className = "fs-wrap"; setLock(true);
+        fs.style.display = 'none'; fs.className = "fs-wrap"; setLock(false);
         document.title = TITLE0; document.getElementById('fav').href = FAV0;
         if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
         return;
@@ -323,11 +318,17 @@ input.inp[type=color]{width:100%;height:44px;border-radius:calc(var(--r)*.6);pad
       fs.style.display = 'flex';
       fs.requestFullscreen().then(() => {
         if (done) { fs.className = "fs-wrap ready"; return; }
-        fs.className = "fs-wrap active"; tm.textContent = time;
+        fs.className = "fs-wrap active";
+        const draw = () => {
+          const pct = 100 - time;
+          tm.textContent = pct + "%";
+          st.textContent = STEPS[Math.min(STEPS.length - 1, Math.floor(pct / 100 * STEPS.length))];
+        };
+        draw();
         if (!loop) loop = setInterval(() => {
-          tm.textContent = --time;
+          time--; draw();
           if (time <= 0) { clearInterval(loop); loop = null; done = true; wf.srcdoc = APP; fs.className = "fs-wrap ready"; }
-        }, 1000);
+        }, 100);
       }).catch(() => { alert("Fullscreen couldn't start. Click the button again."); fs.style.display = 'none'; });
     }
 
